@@ -259,7 +259,7 @@ The revenue driver is **SeedBox**: a monthly subscription delivering 5 curated s
 ### External APIs
 - Plant.id: plant identification + disease diagnosis
 - OpenWeather: weather data
-- Google Maps Geocoding: ZIP to coordinates/zone mapping
+- phzmapi.org: ZIP to USDA hardiness zone (free, no key — Google Maps dropped)
 - Claude API: AI garden chatbot
 - Stripe: SeedBox payments
 - USPS/shipping API: shipment tracking (TBD)

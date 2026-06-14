@@ -7,7 +7,7 @@ HelloGarden is a mobile app (React Native / Expo) for beginner and intermediate 
 
 Note: When you can make changes without the user making having to do it, please just make the changes. Don't ask the user to write code or rewrite stuff unless you're sure that's something that you can't do and the user has to do. THIS DOES NOT MEAN YOU SHOULDN'T ASK QUESTIONS. ASK A LOT OF QUESTIONS, AND ADD ANY RELEVANT INFORMATION YOU GET FROM THAT TO CLAUDE.md, QUESTIONS ARE HOW YOU GET VALUABLE CONTEXT. 
 ## Key Files to Keep Updated
-- **CLAUDE.md** (this file): Master context for all sessions. UPDATE after every significant decision, architectural change, or new learning.
+- **CLAUDE.md** (this file): Master context for all sessions. UPDATE after every significant decision, architectural change, or new learning. ANY TIME SOMETHING IS PUSHED TO LATER, OR THERE IS SOMETHING THE USER SHOULD KNOW OR BE REMINDED OF LATER, ADD IT HERE. ANY TIME YOU GET NEW CONTEXT THAT MIGHT HELP YOU IN THE FUTURE, ADD IT HERE. AFTER EVERY PROMPT, CONSIDER IF THERE IS ANYTHING YOU SHOULD ADD TO CLAUDE.md. 
 - **PROD_DOC.md**: Product requirements document. Update when features are finalized or changed.
 - **env.local**: API keys and environment variables (in .gitignore, never committed).
 - **research/**: Research notes — market-research.md, seedbox-cost-analysis.md
@@ -22,23 +22,31 @@ Note: When you can make changes without the user making having to do it, please 
 - **State Management**: Zustand (lightweight, works well with offline-first)
 - **Push Notifications**: Expo Push Notifications
 - **Weather Data**: OpenWeather API (free in app for all users)
-- **Location/Zones**: Google Maps Geocoding API
-- **Plant ID**: Plant.id API (free: 100/day, then $0.05-0.10 per ID)
+- **Location/Zones**: phzmapi.org (free, no key — ZIP → USDA hardiness zone). OpenWeather accepts ZIP directly for weather. Google Maps dropped — not needed.
+- **Plant ID**: Plant.id API by Kindwise (free: 100/day, then $0.05-0.10 per ID) — API signup at https://www.kindwise.com/plant-id
 - **AI Assistant**: Claude API (for garden chatbot)
 - **Error Tracking**: Sentry
 
 ## Supabase Project
-- **Project ID**: tullpqawvjmjenwiguew
+- **Organization**: saahildugar (org ID: gmamamauaqcpspeixiil)
+- **Project ID**: okpspirezabgmevjegmg
 - **Region**: us-east-1
-- **URL**: https://tullpqawvjmjenwiguew.supabase.co
-- **Dashboard**: https://supabase.com/dashboard/project/tullpqawvjmjenwiguew
+- **URL**: https://okpspirezabgmevjegmg.supabase.co
+- **Dashboard**: https://supabase.com/dashboard/project/okpspirezabgmevjegmg
+- Note: Old project (tullpqawvjmjenwiguew) was under wrong account (Cascades Coding) — do not use.
 
 ## GitHub Repository
 - **Repo**: https://github.com/saahildugar/HelloGarden
 - **Owner**: saahildugar
 
 ## Development Environment
-- **Testing**: Mac + iPhone (Expo Go + TestFlight). No Android device — use EAS Build for Android testing.
+- **Testing (now)**: Android Studio emulator — Medium Phone API 36.0
+- **Testing (soon)**: MacBook incoming — will use Expo Go on iPhone when available
+- **Apple/Google dev accounts**: Deferred — not needed until app is ready to publish
+- **EAS Build**: Deferred — not needed until publishing
+- **Bundle ID**: com.hellogarden.app
+- **Package manager**: npm
+- **Stripe**: Using sandbox/test mode during development (sk_test_... / pk_test_...)
 - **Domain**: hellogarden.com — NOT yet purchased
 
 ## Business Model (FINALIZED)
@@ -143,5 +151,15 @@ Note: When you can make changes without the user making having to do it, please 
 ## Companion Planting
 Plants that benefit each other when grown nearby (e.g., tomatoes + basil). Antagonist plants hurt each other (e.g., tomatoes + fennel). The visual garden planner warns users about bad pairings. Data sourced from open-source datasets (1,972+ plants, CC BY 4.0).
 
+## Deferred / Come Back To
+- **Stripe webhook secret**: Add after deploying Supabase Edge Function for payments. Webhook URL will be `https://okpspirezabgmevjegmg.supabase.co/functions/v1/stripe-webhook`. Register in Stripe Dashboard > Developers > Webhooks. Use Stripe CLI (`stripe listen`) for local testing.
+- **SUPABASE_SERVICE_ROLE_KEY**: User needs to copy from Supabase Dashboard > Project Settings > API > service_role key.
+- **Apple Developer Account** ($99/yr) + **Google Play Console** ($25): Needed before App Store/Play Store submission. Not needed for emulator testing.
+- **EAS Build**: Configure when ready to build for real devices / publish.
+- **hellogarden.com domain**: Purchase when ready to launch.
+- **Shipment tracking API**: USPS or EasyPost/Shippo — TBD. Add to env.local when chosen.
+- **Google Maps**: Dropped entirely. ZIP→zone via phzmapi.org (free, no key, no account). OpenWeather takes ZIP directly. No geocoding needed.
+
 ## Session Notes
 - Session 1 (2026-06-13): Initial project setup. Created repo, Supabase project (existing), env.local. Market research completed (saved to research/). 74 questions + 13 follow-ups answered. All major decisions finalized. SeedBox pricing: $14.99/mo + $3.99 shipping. COGS: $8.59/box. Ready to begin PROD_DOC and code.
+- Session 2 (2026-06-14): Migrated Supabase to correct account (saahildugar, org: gmamamauaqcpspeixiil, project: okpspirezabgmevjegmg). Fixed env.local: new Supabase URL/key (modern sb_publishable_ format), renamed AI_API_KEY → ANTHROPIC_API_KEY, added POWERSYNC_URL placeholder. Fixed Plant.id URL (rebranded to Kindwise: kindwise.com/plant-id). Stripe using sandbox. Testing on Android Studio emulator (Medium Phone API 36). Bundle ID: com.hellogarden.app. Package manager: npm.
