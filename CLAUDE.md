@@ -5,6 +5,7 @@ HelloGarden is a mobile app (React Native / Expo) for beginner and intermediate 
 
 **Tagline**: "Your garden starts here."
 
+Note: When you can make changes without the user making having to do it, please just make the changes. Don't ask the user to write code or rewrite stuff unless you're sure that's something that you can't do and the user has to do. THIS DOES NOT MEAN YOU SHOULDN'T ASK QUESTIONS. ASK A LOT OF QUESTIONS, AND ADD ANY RELEVANT INFORMATION YOU GET FROM THAT TO CLAUDE.md, QUESTIONS ARE HOW YOU GET VALUABLE CONTEXT. 
 ## Key Files to Keep Updated
 - **CLAUDE.md** (this file): Master context for all sessions. UPDATE after every significant decision, architectural change, or new learning.
 - **PROD_DOC.md**: Product requirements document. Update when features are finalized or changed.
