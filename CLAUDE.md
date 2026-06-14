@@ -24,7 +24,7 @@ Note: When you can make changes without the user making having to do it, please 
 - **Weather Data**: OpenWeather API (free in app for all users)
 - **Location/Zones**: phzmapi.org (free, no key — ZIP → USDA hardiness zone). OpenWeather accepts ZIP directly for weather. Google Maps dropped — not needed.
 - **Plant ID**: Plant.id API by Kindwise (free: 100/day, then $0.05-0.10 per ID) — API signup at https://www.kindwise.com/plant-id
-- **AI Assistant**: Claude API (for garden chatbot)
+- **AI Assistant**: Google Gemini API (free tier, no CC — switched from Anthropic). Key in env.local as GEMINI_API_KEY.
 - **Error Tracking**: Sentry
 
 ## Supabase Project
@@ -152,6 +152,7 @@ Note: When you can make changes without the user making having to do it, please 
 Plants that benefit each other when grown nearby (e.g., tomatoes + basil). Antagonist plants hurt each other (e.g., tomatoes + fennel). The visual garden planner warns users about bad pairings. Data sourced from open-source datasets (1,972+ plants, CC BY 4.0).
 
 ## Deferred / Come Back To
+- **AI Chatbot**: Using Google Gemini API (GEMINI_API_KEY — key already in env.local). Still P2 priority, implement when ready.
 - **Stripe webhook secret**: Add after deploying Supabase Edge Function for payments. Webhook URL will be `https://okpspirezabgmevjegmg.supabase.co/functions/v1/stripe-webhook`. Register in Stripe Dashboard > Developers > Webhooks. Use Stripe CLI (`stripe listen`) for local testing.
 - **SUPABASE_SERVICE_ROLE_KEY**: User needs to copy from Supabase Dashboard > Project Settings > API > service_role key.
 - **Apple Developer Account** ($99/yr) + **Google Play Console** ($25): Needed before App Store/Play Store submission. Not needed for emulator testing.

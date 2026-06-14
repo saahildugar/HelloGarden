@@ -260,7 +260,7 @@ The revenue driver is **SeedBox**: a monthly subscription delivering 5 curated s
 - Plant.id: plant identification + disease diagnosis
 - OpenWeather: weather data
 - phzmapi.org: ZIP to USDA hardiness zone (free, no key — Google Maps dropped)
-- Claude API: AI garden chatbot
+- Google Gemini API: AI garden chatbot (free tier via Google AI Studio)
 - Stripe: SeedBox payments
 - USPS/shipping API: shipment tracking (TBD)
 
