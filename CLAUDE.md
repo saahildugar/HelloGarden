@@ -5,27 +5,33 @@ HelloGarden is a mobile app (React Native / Expo) for beginner and intermediate 
 
 **Tagline**: "Your garden starts here."
 
-Note: When you can make changes without the user making having to do it, please just make the changes. Don't ask the user to write code or rewrite stuff unless you're sure that's something that you can't do and the user has to do. THIS DOES NOT MEAN YOU SHOULDN'T ASK QUESTIONS. ASK A LOT OF QUESTIONS, AND ADD ANY RELEVANT INFORMATION YOU GET FROM THAT TO CLAUDE.md, QUESTIONS ARE HOW YOU GET VALUABLE CONTEXT. 
+Note: When you can make changes without the user having to do it, please just make the changes. Don't ask the user to write code or rewrite stuff unless you're sure that's something that you can't do and the user has to do. THIS DOES NOT MEAN YOU SHOULDN'T ASK QUESTIONS. ASK A LOT OF QUESTIONS, AND ADD ANY RELEVANT INFORMATION YOU GET FROM THAT TO CLAUDE.md. QUESTIONS ARE HOW YOU GET VALUABLE CONTEXT.
+
 ## Key Files to Keep Updated
-- **CLAUDE.md** (this file): Master context for all sessions. UPDATE after every significant decision, architectural change, or new learning. ANY TIME SOMETHING IS PUSHED TO LATER, OR THERE IS SOMETHING THE USER SHOULD KNOW OR BE REMINDED OF LATER, ADD IT HERE. ANY TIME YOU GET NEW CONTEXT THAT MIGHT HELP YOU IN THE FUTURE, ADD IT HERE. AFTER EVERY PROMPT, CONSIDER IF THERE IS ANYTHING YOU SHOULD ADD TO CLAUDE.md. 
+- **CLAUDE.md** (this file): Master context for all sessions. UPDATE after every significant decision, architectural change, or new learning. ANY TIME SOMETHING IS PUSHED TO LATER, OR THERE IS SOMETHING THE USER SHOULD KNOW OR BE REMINDED OF LATER, ADD IT HERE. ANY TIME YOU GET NEW CONTEXT THAT MIGHT HELP YOU IN THE FUTURE, ADD IT HERE. AFTER EVERY PROMPT, CONSIDER IF THERE IS ANYTHING YOU SHOULD ADD TO CLAUDE.md.
+- **SESSION_STATE.md**: Exact snapshot of where we left off. Update at end of every session. READ THIS at the start of each session to resume instantly.
 - **PROD_DOC.md**: Product requirements document. Update when features are finalized or changed.
 - **env.local**: API keys and environment variables (in .gitignore, never committed).
 - **research/**: Research notes — market-research.md, seedbox-cost-analysis.md
 
+---
+
 ## Tech Stack
 - **Frontend**: React Native + Expo (managed workflow)
-- **Backend**: Supabase (Auth, Database, Edge Functions, Storage)
+- **Backend**: Supabase (Auth, Database, Edge Functions, Storage, Realtime)
 - **Database**: PostgreSQL (via Supabase)
-- **Payments**: Stripe (SeedBox subscription only)
+- **Payments**: Stripe (SeedBox subscription only) — sandbox/test mode during dev
 - **Local DB / Offline**: WatermelonDB (SQLite under hood) + PowerSync for sync
 - **Navigation**: Expo Router (file-based routing)
 - **State Management**: Zustand (lightweight, works well with offline-first)
-- **Push Notifications**: Expo Push Notifications
-- **Weather Data**: OpenWeather API (free in app for all users)
-- **Location/Zones**: phzmapi.org (free, no key — ZIP → USDA hardiness zone). OpenWeather accepts ZIP directly for weather. Google Maps dropped — not needed.
-- **Plant ID**: Plant.id API by Kindwise (free: 100/day, then $0.05-0.10 per ID) — API signup at https://www.kindwise.com/plant-id
-- **AI Assistant**: Google Gemini API (free tier, no CC — switched from Anthropic). Key in env.local as GEMINI_API_KEY.
-- **Error Tracking**: Sentry
+- **Push Notifications**: Expo Push Notifications (no separate API key — uses EXPO_TOKEN)
+- **Weather Data**: OpenWeather API (free tier, 1000 calls/day, accepts ZIP directly)
+- **Location/Zones**: phzmapi.org (free, no key — ZIP → USDA hardiness zone). Google Maps dropped — not needed.
+- **Plant ID**: Plant.id API by Kindwise (rebranded) — API signup at https://www.kindwise.com/plant-id. Free: 100/day, then $0.05-0.10/ID. Covers plant ID + disease/pest diagnosis.
+- **AI Assistant**: Google Gemini API (free tier via Google AI Studio — no CC required). Switched from Anthropic. Key in env.local as GEMINI_API_KEY.
+- **Error Tracking**: Sentry (React Native project: HelloGarden)
+
+---
 
 ## Supabase Project
 - **Organization**: saahildugar (org ID: gmamamauaqcpspeixiil)
@@ -33,63 +39,90 @@ Note: When you can make changes without the user making having to do it, please 
 - **Region**: us-east-1
 - **URL**: https://okpspirezabgmevjegmg.supabase.co
 - **Dashboard**: https://supabase.com/dashboard/project/okpspirezabgmevjegmg
-- Note: Old project (tullpqawvjmjenwiguew) was under wrong account (Cascades Coding) — do not use.
+- **Anon key format**: Modern `sb_publishable_...` key (not legacy JWT)
+- **PowerSync publication**: `powersync` publication created for ALL TABLES (needed for logical replication)
+- **Note**: Old project (tullpqawvjmjenwiguew) was under wrong account (Cascades Coding) — do not use.
+
+## PowerSync
+- **URL**: https://6a2e64d50ef84ed671a18b55.powersync.journeyapps.com
+- **Dashboard**: https://app.powersync.com
+- **Connected to**: Supabase project okpspirezabgmevjegmg
+- **Sync rules**: Not yet configured (done in Phase 1 when building offline layer)
 
 ## GitHub Repository
 - **Repo**: https://github.com/saahildugar/HelloGarden
 - **Owner**: saahildugar
+- **Branch**: master
+
+---
 
 ## Development Environment
 - **Testing (now)**: Android Studio emulator — Medium Phone API 36.0
 - **Testing (soon)**: MacBook incoming — will use Expo Go on iPhone when available
-- **Apple/Google dev accounts**: Deferred — not needed until app is ready to publish
-- **EAS Build**: Deferred — not needed until publishing
+- **Apple/Google dev accounts**: Deferred — not needed until Phase 7 (publishing)
+- **EAS Build**: Deferred — not needed until Phase 7
 - **Bundle ID**: com.hellogarden.app
 - **Package manager**: npm
-- **Stripe**: Using sandbox/test mode during development (sk_test_... / pk_test_...)
+- **Stripe mode**: Sandbox/test during development (pk_test_... / sk_test_...)
 - **Domain**: hellogarden.com — NOT yet purchased
+
+---
 
 ## Business Model (FINALIZED)
 - **App is 100% FREE** — no app subscription, no ads, no paywalls
 - Revenue comes entirely from **SeedBox** ($14.99/mo + $3.99 shipping)
-- SeedBox subscribers get unlimited Plant ID; free users get 5/month
+- SeedBox subscribers get unlimited Plant ID + disease diagnosis; free users get 5/month
+- SeedBox subscribers get unlimited AI chatbot; free users get limited queries/month
 - COGS per box: ~$8.59 loaded. Gross margin: ~$6.40/box (42.7%)
 - First box free (user pays $3.99 shipping only) — breaks even after 1 paid month
 - Cancel anytime, no commitment
 - Germination guarantee: if <50% of varieties germinate AND user followed in-app instructions, replacement seeds in next box (no cash refunds). Can also offer a month of bonus content/features as goodwill.
 
+---
+
 ## Brand & Design (FINALIZED)
 - **Name**: HelloGarden (final)
 - **Tagline**: "Your garden starts here."
 - **Personality**: Clean, professional, warm. Accessible to all ages including less tech-savvy
-- **Colors**: Sage green + warm cream/off-white + earthy brown accents
-- **Logo**: TBD (user will generate later, not blocking)
-- **Dark mode**: Yes, from launch
+- **Colors**:
+  - Primary: Sage green (#7C9A6E or similar)
+  - Background: Warm cream/off-white (#FDF8F0 or similar)
+  - Accent: Earthy brown (#8B6F47 or similar)
+  - Text: Dark charcoal (#2D2D2D)
+  - Error/Alert: Warm red (#D64545)
+  - Success: Fresh green (#4CAF50)
+- **Logo**: TBD (user will generate later — not blocking any code)
+- **Dark mode**: Yes, from launch. Dark backgrounds with same accent palette.
 - **Photos**: Real photos for plant database
 - **Illustrations**: Subtle UI illustrations for empty states, onboarding
 - **Animations**: Plant growth animations, subtle micro-interactions
-- **Home screen**: Dashboard — today's care tasks (proactive), weather, garden overview, SeedBox status
-- **Notifications**: ONLY for critical alerts (plant at risk of dying). Home screen shows ALL tasks including non-urgent.
+- **Home screen**: Dashboard — today's care tasks (proactive), weather widget, garden overview, SeedBox status
+- **Notifications**: ONLY push for critical alerts (plant at risk of dying). Home screen shows ALL tasks including non-urgent.
+- **Typography**: Clean, readable sans-serif. Large touch targets. WCAG AA contrast.
+
+---
 
 ## Target Audience (FINALIZED)
 - All adult gardeners (18-65+), universal
 - Beginners AND intermediate gardeners
-- All garden types: user picks during onboarding (indoor, outdoor, balcony, raised bed, herbs, vegetables, flowers)
+- All garden types: user picks during onboarding (indoor, outdoor, balcony, raised bed, herbs, vegetables, flowers — multi-select)
 - All environments: urban, suburban, rural
 - US-only for SeedBox; app available globally
-- Family/shared gardens: equal access, invite via share link (no account required for invitees — guest/anonymous access)
+- Family/shared gardens: equal access, invite via share link (no account required for invitees — guest/anonymous Supabase auth)
+
+---
 
 ## Core Features — MVP Launch
 1. Plant tracking & garden management (multiple gardens per user)
 2. Smart care reminders (watering, fertilizing, pruning)
-3. Plant identification via camera (Plant.id API) — 5 free/month, unlimited for SeedBox
-4. Disease/pest diagnosis via camera (Plant.id API)
+3. Plant identification via camera (Kindwise API) — 5 free/month, unlimited for SeedBox
+4. Disease/pest diagnosis via camera (Kindwise API) — same limits as Plant ID
 5. Plant encyclopedia (~500-1000 plants at launch, detailed care instructions)
 6. Visual garden planner with drag-and-drop + companion planting warnings
-7. Weather integration (free for all users)
+7. Weather integration (free for all users via OpenWeather)
 8. SeedBox subscription management + in-app shipment tracking
-9. Seasonal planting calendar (personalized by USDA zone)
-10. AI garden assistant chatbot (Claude API)
+9. Seasonal planting calendar (personalized by USDA zone via phzmapi.org)
+10. AI garden assistant chatbot (Google Gemini API)
 11. Family/shared gardens (invite via link, equal access, no account needed for guests)
 12. Offline-first architecture (WatermelonDB + PowerSync)
 13. Photo journal / growth tracking with plant growth animations
@@ -103,64 +136,96 @@ Note: When you can make changes without the user making having to do it, please 
 - Harvest tracking (no)
 - Smart device integration (distant future — founder has ESP32 hardware experience)
 
+---
+
 ## SeedBox Details (FINALIZED)
-- **Price**: $14.99/month + $3.99 shipping (separate)
-- **First box**: FREE (user pays $3.99 shipping only)
+- **Price**: $14.99/month + $3.99 shipping (separate line items)
+- **First box**: FREE (user pays $3.99 shipping only) — breaks even after 1 paid month
 - Monthly delivery, US only, cancel anytime
 - **Seed selection**: User sees 9-10 curated options, picks their 5
 - Seeds curated by: USDA zone, existing garden, companion planting, season, onboarding preferences
 - Heirloom, non-GMO seeds, ~15-20 seeds per variety
-- Contents: 5 seed packets + small fertilizer packet
+- Contents: 5 seed packets + small fertilizer packet + info card with QR to in-app guides
 - ONE tier at launch
 - Gift subscriptions supported
-- Packaging: bubble mailer envelope with HelloGarden sticker + info card
+- Packaging: #0 poly bubble mailer + HelloGarden branded sticker
+- Shipping: USPS First-Class Large Envelope (~$1.90 at 2oz)
 - Fulfillment: white-label, self-pack initially. Partner with seed company at scale.
 - Winter: indoor-growing seeds for cold climates (never skip months)
-- In-app shipment tracking
-- **Germination guarantee**: If <50% of varieties germinate with proper care, replacement seeds in next box. No cash refunds.
-- Wholesale supplier: Bentley Seeds ($0.50-0.85/packet at bulk)
+- In-app shipment tracking (TBD provider — EasyPost or Shippo)
+- **Germination guarantee**: If <50% of varieties germinate with proper care per in-app instructions, replacement seeds in next box. No cash refunds.
+- Wholesale supplier: Bentley Seeds ($0.50-0.85/packet at 250-500 unit minimums)
+
+---
 
 ## Onboarding (FINALIZED)
 - Minimal friction — no account required to browse/use app
-- Quick onboarding: ZIP code + experience level + garden type
+- Quick onboarding: ZIP code + experience level + garden type (multi-select)
 - Account creation required only for SeedBox subscription
-- SeedBox onboarding: additional questions (preferences, garden size, sunlight, goals)
+- SeedBox onboarding: additional questions (preferences, garden size, sunlight, goals, allergies, current plants)
 - Garden setup happens AFTER onboarding
 - SeedBox pitched after user adds their first plant (natural conversion moment)
 - 3-4 illustrated walkthrough screens max
 
+---
+
 ## Offline Architecture (FINALIZED)
-- **Offline**: plant tracking, care reminders, garden view, care guides, journal, manual plant entry, encyclopedia, garden planner
-- **Online only**: SeedBox ordering, weather updates, plant ID, AI chatbot, sync, disease diagnosis
-- **Sync strategy**: last-write-wins (simple, adequate)
+- **Works offline**: plant tracking, care reminders (pre-cached), garden view, planner, plant encyclopedia (pre-cached), photo journal (stored locally, synced later), manual plant entry
+- **Requires internet**: SeedBox ordering, weather updates, plant ID, AI chatbot, sync across devices, disease diagnosis, shipment tracking
+- **Sync strategy**: last-write-wins (simple, adequate for this use case)
+- **Local DB**: WatermelonDB (SQLite, native queries, handles 10K+ records)
+- **Sync layer**: PowerSync (managed) — connected to Supabase
+
+---
 
 ## Technical Decisions (FINALIZED)
 - Auth: Email/password + Google + Apple Sign In (Supabase Auth)
 - Guest/anonymous access for garden invitees (Supabase anonymous auth)
 - Multiple gardens per user
 - Notifications: conservative, customizable. Only push for critical plant alerts.
-- Data export: yes
+- Data export: yes (post-MVP if needed)
 - Accessibility: WCAG AA
 - English only at launch
 - National US launch for SeedBox
 - TypeScript throughout
-- Functional components with hooks
+- Functional components with hooks only (no class components)
 - File-based routing (Expo Router)
 - Ad-free, no dark patterns, transparent pricing
 
+---
+
+## Data Model (High Level)
+- **User**: auth, profile, preferences, USDA zone, experience level, zip code
+- **Garden**: name, type, user_id, shared members, location
+- **Plant**: species_id, garden_id, date_planted, status, care schedule override
+- **CareLog**: plant_id, type (water/fertilize/prune/repot), timestamp, notes
+- **PlantPhoto**: plant_id, image_url, timestamp, notes
+- **PlantSpecies**: encyclopedia — name, care info, companions, antagonists, zones, germination days, harvest days
+- **CompanionPlanting**: species_a, species_b, relationship (companion/antagonist)
+- **SeedBoxSubscription**: user_id, status, stripe_subscription_id, stripe_customer_id, shipping_address
+- **SeedBoxOrder**: subscription_id, month, selected_seed_ids, tracking_number, status, shipped_at
+- **SeedOption**: monthly curated options, species_id, month, zone_availability
+
+---
+
 ## Companion Planting
-Plants that benefit each other when grown nearby (e.g., tomatoes + basil). Antagonist plants hurt each other (e.g., tomatoes + fennel). The visual garden planner warns users about bad pairings. Data sourced from open-source datasets (1,972+ plants, CC BY 4.0).
+Plants that benefit each other when grown nearby (e.g., tomatoes + basil). Antagonist plants hurt each other (e.g., tomatoes + fennel). The visual garden planner warns users about bad pairings. Data sourced from open-source datasets (1,972+ plants, CC BY 4.0). Sources: OpenFarm, GenevieveMilliken/companion_plants, heydenberk/gardening-data.
+
+---
 
 ## Deferred / Come Back To
-- **AI Chatbot**: Using Google Gemini API (GEMINI_API_KEY — key already in env.local). Still P2 priority, implement when ready.
-- **Stripe webhook secret**: Add after deploying Supabase Edge Function for payments. Webhook URL will be `https://okpspirezabgmevjegmg.supabase.co/functions/v1/stripe-webhook`. Register in Stripe Dashboard > Developers > Webhooks. Use Stripe CLI (`stripe listen`) for local testing.
-- **SUPABASE_SERVICE_ROLE_KEY**: User needs to copy from Supabase Dashboard > Project Settings > API > service_role key.
-- **Apple Developer Account** ($99/yr) + **Google Play Console** ($25): Needed before App Store/Play Store submission. Not needed for emulator testing.
-- **EAS Build**: Configure when ready to build for real devices / publish.
-- **hellogarden.com domain**: Purchase when ready to launch.
-- **Shipment tracking API**: USPS or EasyPost/Shippo — TBD. Add to env.local when chosen.
-- **Google Maps**: Dropped entirely. ZIP→zone via phzmapi.org (free, no key, no account). OpenWeather takes ZIP directly. No geocoding needed.
+- **STRIPE_WEBHOOK_SECRET**: Add after Phase 5 — deploy Supabase Edge Function first. Webhook URL: `https://okpspirezabgmevjegmg.supabase.co/functions/v1/stripe-webhook`. Register in Stripe Dashboard → Developers → Webhooks. Use Stripe CLI (`stripe listen`) for local testing.
+- **Shipment tracking API**: EasyPost or Shippo — TBD. Choose and add to env.local in Phase 5. Add `SHIPMENT_TRACKING_API_KEY` placeholder when decided.
+- **Apple Developer Account** ($99/yr) + **Google Play Console** ($25 one-time): Needed in Phase 7 before App Store/Play Store submission. Not needed for emulator testing.
+- **EAS Build**: Configure `eas.json` in Phase 7.
+- **hellogarden.com domain**: Purchase when nearing launch.
+- **Logo**: User will generate — not blocking any code.
+- **AI Chatbot (Gemini)**: P2 priority — GEMINI_API_KEY already in env.local. Implement in Phase 6.
+- **PowerSync sync rules**: Configure in Phase 3 (offline layer step). Rules define which tables sync to which users.
+- **Google Maps**: Dropped permanently. phzmapi.org handles zone lookup for free. OpenWeather takes ZIP directly. No geocoding needed anywhere.
+
+---
 
 ## Session Notes
-- Session 1 (2026-06-13): Initial project setup. Created repo, Supabase project (existing), env.local. Market research completed (saved to research/). 74 questions + 13 follow-ups answered. All major decisions finalized. SeedBox pricing: $14.99/mo + $3.99 shipping. COGS: $8.59/box. Ready to begin PROD_DOC and code.
-- Session 2 (2026-06-14): Migrated Supabase to correct account (saahildugar, org: gmamamauaqcpspeixiil, project: okpspirezabgmevjegmg). Fixed env.local: new Supabase URL/key (modern sb_publishable_ format), renamed AI_API_KEY → ANTHROPIC_API_KEY, added POWERSYNC_URL placeholder. Fixed Plant.id URL (rebranded to Kindwise: kindwise.com/plant-id). Stripe using sandbox. Testing on Android Studio emulator (Medium Phone API 36). Bundle ID: com.hellogarden.app. Package manager: npm.
+- **Session 1 (2026-06-13)**: Initial project setup. Created repo, first Supabase project (wrong account — later fixed), env.local skeleton. Market research completed (research/). 74 questions + 13 follow-ups answered. All major product decisions finalized. SeedBox pricing: $14.99/mo + $3.99 shipping. COGS: $8.59/box.
+- **Session 2 (2026-06-14)**: Full pre-coding setup completed. Migrated Supabase to correct account (saahildugar). New Supabase project created fresh (okpspirezabgmevjegmg, us-east-1). PowerSync connected to Supabase — had to create `powersync` publication manually via SQL. All API keys obtained and filled in env.local. Dropped Google Maps (using phzmapi.org). Dropped Anthropic (using Google Gemini free tier). Plant.id URL fixed (rebranded to Kindwise). Stripe in sandbox mode. Testing on Android Studio emulator (Medium Phone API 36). Bundle ID: com.hellogarden.app. Package manager: npm. env.local 100% complete except deferred keys. SESSION_STATE.md created. Ready to begin coding in Session 3.

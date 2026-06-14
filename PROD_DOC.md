@@ -1,7 +1,7 @@
 # HelloGarden - Product Requirements Document
 
 > **Status**: FINALIZED (core decisions locked)
-> **Last Updated**: 2026-06-13
+> **Last Updated**: 2026-06-14
 
 ---
 
@@ -180,7 +180,7 @@ The revenue driver is **SeedBox**: a monthly subscription delivering 5 curated s
 - "Why are my tomato leaves turning yellow?"
 - "What should I plant next to my peppers?"
 - "When should I start seeds indoors in zone 7?"
-- Powered by Claude API
+- Powered by Google Gemini API (free tier via Google AI Studio)
 - **Free users**: Limited queries/month
 - **SeedBox subscribers**: Unlimited
 
@@ -374,3 +374,71 @@ The revenue driver is **SeedBox**: a monthly subscription delivering 5 curated s
 - **Churn rate**: Monthly SeedBox cancellation rate (target: <10%)
 - **NPS**: Net Promoter Score (target: 50+)
 - **App Store rating**: Target 4.5+ stars
+
+---
+
+## 13. Implementation Roadmap
+
+> **Current status**: Pre-coding setup complete. Starting Phase 1 next session.
+> See SESSION_STATE.md for exact pick-up point each session.
+
+### Phase 1 — Project Foundation
+*All done by Claude. No user action required.*
+1. Initialize Expo project (`npx create-expo-app`) — TypeScript template, Expo Router, bundle ID `com.hellogarden.app`
+2. Install all packages: Supabase JS, WatermelonDB, PowerSync, Zustand, Stripe React Native SDK, `@sentry/react-native`, `@google/generative-ai`, all Expo packages (camera, notifications, location, image-picker, constants)
+3. Set up folder structure: `/app` (Expo Router routes), `/components`, `/hooks`, `/stores` (Zustand), `/lib` (API clients), `/types`, `/assets`, `/constants`
+4. Wire env.local into app via `expo-constants` + `app.config.ts`
+5. Set up design system: colors, typography, spacing, theme, dark mode (light/dark token system)
+6. Create Supabase database schema — all tables, foreign keys, indexes, Row Level Security policies
+
+### Phase 2 — Auth & Onboarding
+*All done by Claude.*
+7. Auth screens: sign up (email), sign in (email), Google OAuth, Apple OAuth, anonymous guest access
+8. Auth state management (Zustand + Supabase session)
+9. Onboarding flow (4 screens): Welcome → ZIP/experience/garden-type → First garden creation → SeedBox intro pitch
+10. Persist onboarding data: save ZIP, zone (via phzmapi.org), experience level, garden type to Supabase user profile
+
+### Phase 3 — Core App (P0 Features)
+*All done by Claude.*
+11. Home dashboard: today's care task list, weather widget (OpenWeather), garden overview cards, SeedBox status banner
+12. Plant tracking: add plant (manual + from encyclopedia), view plant detail, edit, delete, log care (water/fertilize/prune/repot)
+13. Multiple gardens: create/name/type, switch between gardens, garden overview screen
+14. Plant encyclopedia: seed Supabase with 500+ plants from open-source data, search UI, plant detail page with full care info
+15. Care reminders: compute next-care dates per plant, home screen task list, critical-only push notifications via Expo
+16. Offline layer: WatermelonDB schema mirroring Supabase, PowerSync sync rules, Zustand offline-aware stores
+
+### Phase 4 — P1 Features
+*All done by Claude.*
+17. Visual garden planner: drag-and-drop grid layout, define beds/containers, place plants, companion planting warning overlay
+18. Plant ID camera: Expo Camera integration, Kindwise API call, result screen with species + link to encyclopedia
+19. Disease/pest diagnosis camera: same camera flow, Kindwise health assessment endpoint, diagnosis + treatment UI
+20. Weather integration: OpenWeather current + 5-day forecast, frost alerts, weather-aware care adjustments on home screen
+21. Photo journal: camera capture or photo library pick, timeline view per plant, growth progression display, plant growth animations
+22. Seasonal planting calendar: USDA zone from phzmapi.org, monthly "plant now" grid, integrate with SeedBox received seeds
+
+### Phase 5 — Monetization (P0 + P1)
+*Claude builds code. User configures Stripe dashboard.*
+23. SeedBox subscription flow: Stripe React Native SDK, subscribe button, billing screen, cancel/pause flow
+24. SeedBox seed selection UI: browse 9-10 curated monthly options, pick 5, confirm order
+25. Supabase Edge Function: Stripe webhook handler for subscription events (created, updated, canceled, payment_failed)
+26. Add STRIPE_WEBHOOK_SECRET to env.local after Edge Function deployed
+27. Order history screen
+28. Shipment tracking: integrate chosen provider (EasyPost or Shippo), in-app tracking status screen
+29. Gift subscription purchase flow
+
+### Phase 6 — AI, Sharing & Polish (P2)
+*All done by Claude.*
+30. AI garden chatbot: Gemini API integration, chat UI, free vs. subscriber usage limits (track monthly query count)
+31. Family/shared gardens: generate invite link (shareable URL), recipient opens app → anonymous Supabase auth → joined as garden member with equal edit access
+32. Sentry instrumentation: error boundaries on all screens, performance tracing, user context
+33. Accessibility audit: WCAG AA, minimum 44pt touch targets, screen reader labels, contrast check
+34. Dark mode: audit and finalize all screens for both light/dark
+
+### Phase 7 — Launch Prep
+*Mix of Claude and user actions.*
+35. EAS Build configuration: `eas.json` for iOS + Android, internal/preview/production profiles
+36. App Store assets: icon, screenshots (iPhone + Android), preview video, description, keywords
+37. TestFlight setup: internal testing build distributed via TestFlight
+38. Google Play internal testing track
+39. Final QA: end-to-end flows on real devices
+> **User must do**: Apple Developer Account ($99/yr), Google Play Console ($25), logo/branding assets, App Store copy review
