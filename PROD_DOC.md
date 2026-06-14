@@ -274,25 +274,95 @@ The revenue driver is **SeedBox**: a monthly subscription delivering 5 curated s
 ## 8. Design System
 
 ### Colors
-- **Primary**: Sage green (#7C9A6E or similar)
-- **Background**: Warm cream/off-white (#FDF8F0 or similar)
-- **Accent**: Earthy brown (#8B6F47 or similar)
-- **Text**: Dark charcoal (#2D2D2D)
-- **Error/Alert**: Warm red (#D64545)
-- **Success**: Fresh green (#4CAF50)
-- **Dark mode**: Dark backgrounds with same accent palette
+- **Primary**: Sage green (#7C9A6E) — used for primary actions and success states, NOT as a background
+- **Background**: Warm cream (#FDF8F0) — all primary backgrounds
+- **Accent**: Earthy brown (#8B6F47) — secondary accents, borders, dividers
+- **Text**: Dark charcoal (#2D2D2D) — body text
+- **Error/Alert**: Warm red (#D64545) — overdue tasks, critical alerts only
+- **Success**: Fresh green (#4CAF50) — healthy status, completed tasks
+- **Dark mode**: Dark backgrounds with same accent palette. System-default + user override in settings.
 
 ### Typography
-- Clean, readable sans-serif
-- Large touch targets for accessibility
-- WCAG AA contrast ratios
+- **Font**: DM Sans, Inter, or Plus Jakarta Sans (decision final at mockup phase)
+- Large body text (accessible to 65+ users)
+- Strong heading hierarchy — not everything bold
+- No all-caps except for labels and tags
+- Large touch targets (minimum 44pt), WCAG AA contrast
 
 ### Design Principles
 1. Professional but warm — not childish, not sterile
-2. Photo-forward — beautiful plant imagery as hero content
+2. Photo-forward — beautiful real plant imagery as hero content
 3. Accessible — works for 18 year olds and 65 year olds
-4. Information-dense but not cluttered — progressive disclosure
+4. Progressive disclosure — lead with the most important info, collapse advanced details
 5. Micro-interactions and plant growth animations for delight
+6. Task-first always — home screen answers "what do I do today?" in 2 seconds
+7. Airy overall spacing; dense where action is needed (task lists, care schedules)
+8. Line icons for nav (filled = active state). Rounded, organic icon style — no sharp geometric.
+
+### Layout Patterns
+- **Home**: Dashboard header (weather + streak + garden summary) + task list below
+- **Garden/Plant views**: Photo-forward card grid (2 columns)
+- **Task lists**: Compact, scannable list with visual urgency hierarchy
+- **Encyclopedia**: Search-first with category chips below
+- **Cards**: Information-dense with clear action surface — no oversized empty padding
+
+### Navigation Model (FINAL)
+- **Bottom tab bar — 4 tabs**: Home / Garden / Explore / SeedBox
+- Settings and Profile: accessible from avatar in Home header
+- FAB (Floating Action Button): "+" Add Plant, visible inside Garden Detail
+- No drawer navigation, no hamburger menu
+
+### UI Architecture (FINAL — 27 screens)
+
+#### Navigation Structure
+```
+Bottom Tab Bar (4 tabs)
+├── Home          — dashboard, today's tasks, weather, streak
+├── Garden        — all gardens → plant grid → plant detail → planner
+├── Explore       — encyclopedia, plant ID, AI chatbot, seasonal calendar
+└── SeedBox       — subscription pitch or subscriber dashboard
+```
+
+#### Screen Index
+1. Splash / Loading
+2. Onboarding — Welcome
+3. Onboarding — Setup (ZIP / experience / garden type)
+4. Onboarding — Create First Garden
+5. SeedBox Intro Card (dismissible, shown post-first-plant)
+6. Home Dashboard
+7. Garden Tab (all gardens)
+8. Garden Detail (plant grid inside a garden)
+9. Add Plant Flow
+10. Plant Detail — Care tab (default)
+11. Plant Detail — Journal tab
+12. Plant Detail — Info tab
+13. Log Care (bottom sheet)
+14. Plant ID Camera
+15. ID Result Screen
+16. Explore Hub
+17. Encyclopedia Browse / Search
+18. Encyclopedia Plant Detail
+19. Seasonal Planting Calendar
+20. AI Garden Chatbot
+21. SeedBox — Non-subscriber pitch
+22. SeedBox — Subscriber dashboard
+23. SeedBox Seed Selection (pick 5 of 9-10)
+24. Auth — Sign In
+25. Auth — Sign Up
+26. Settings + Profile
+27. Notification Preferences
+28. Garden Planner (sub-screen of Garden Detail)
+29. Shared Garden / Invite Flow
+
+#### Key UI Decisions
+- **Streak mechanic**: Daily care streak displayed on Home (leaf icon + N day streak). Creates loss-aversion loop. No competitor uses this.
+- **Empty state**: Illustrated warm empty garden state on first launch — "Your garden is empty" + "Add a Plant" (primary) + "Browse Encyclopedia" (secondary)
+- **Plant card**: Photo + name + care status ("Water in 2 days") + quick-log checkmark button
+- **Plant detail**: 3 tabs (Care / Journal / Info). Quick action bar (Water / Fertilize / More) sticky at top.
+- **SeedBox tab**: Changes appearance for subscribers (ribbon on icon, management UI vs. pitch UI)
+- **Garden planner**: Sub-screen inside Garden Detail (Planner tab), not in main nav
+- **Encyclopedia**: Inside Explore tab — not a standalone nav entry
+- **SeedBox placement**: Never in onboarding. Pitch card appears after first plant added (dismissible, 7-day cooldown).
 
 ---
 

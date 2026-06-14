@@ -213,13 +213,40 @@ Plants that benefit each other when grown nearby (e.g., tomatoes + basil). Antag
 
 ---
 
-## UI Design Plan (Pre-Coding — Session 3)
-- **Before any code is written**, Claude will use the Canva MCP to generate visual mockups of all key screens
-- User reviews and approves mockups, Claude iterates until satisfied
-- Approved designs get documented into PROD_DOC.md Section 8 as the official UI spec
-- THEN Phase 1 coding begins with a clear visual target for every screen
-- Screens to mockup: onboarding (4 screens), home dashboard, plant detail, garden view, encyclopedia, garden planner, Plant ID camera, SeedBox screens, auth screens, AI chatbot, settings
-- Design language: sage green (#7C9A6E), warm cream (#FDF8F0), earthy brown (#8B6F47), charcoal text (#2D2D2D), light + dark mode variants, real placeholder content (not Lorem Ipsum)
+## UI Design Plan (Session 3 — IN PROGRESS)
+
+### Phase 1 — Research COMPLETE (Session 3)
+Competitor research done on Planta, PictureThis, Gardenize, Plant Parent. Key findings:
+- Task-first home screen (not aesthetic-first) is the winning pattern
+- All competitors fail at garden grouping (flat lists only) — HelloGarden's multi-garden approach is a differentiator
+- Streaks are missing from all competitors — opportunity
+- Progressive disclosure on plant detail screens is critical (competitors fail here)
+- Permission pre-prompts with benefit copy (Planta) are worth copying
+- PictureThis subscription popup on every open = do not do this
+- Gardenize's multi-photo growth timeline is a best-in-class pattern to copy
+
+### Phase 2 — Architecture COMPLETE (Session 3)
+All 13 product decisions made. Full 27-screen architecture defined. See PROD_DOC.md Section 8.
+
+Key decisions:
+- **Navigation**: 4 bottom tabs — Home / Garden / Explore / SeedBox
+- **Home screen**: Dashboard header (weather + streak + garden card) + Today's tasks list
+- **Streak mechanic**: Yes — daily care streak on home screen (no competitor does this)
+- **Garden representation**: Garden cards → tap → plant grid
+- **Onboarding**: 3 screens (Welcome / Setup / Create First Garden). SeedBox NOT in onboarding.
+- **SeedBox pitch**: Dismissible card after first plant is added (natural conversion moment)
+- **Plant detail**: 3 tabs (Care / Journal / Info) with quick action bar
+- **Garden planner**: Sub-screen inside Garden Detail, not in main nav
+- **Encyclopedia**: Inside Explore tab
+- **Dark mode**: System-default + user override in Settings
+- **Typography**: DM Sans / Inter / Plus Jakarta Sans (final at mockup phase)
+
+### Phase 3 — Mockups (NEXT — pending user approval of architecture)
+- Use Canva MCP to generate visual mockups of all key screens
+- Apply design system: sage green (#7C9A6E), warm cream (#FDF8F0), earthy brown (#8B6F47), charcoal (#2D2D2D)
+- Light + dark mode variants for key screens
+- Real placeholder content (no Lorem Ipsum)
+- Mockup order: Onboarding → Home Dashboard → Plant Detail → Garden View → Encyclopedia → Garden Planner → Plant ID → SeedBox → Auth → AI Chatbot → Settings
 
 ## Tools to Set Up (Session 3)
 - **GitHub MCP**: Connect on claude.ai integrations — lets Claude manage GitHub Issues/milestones to track the 7 phases. Do this first.
@@ -244,3 +271,4 @@ Plants that benefit each other when grown nearby (e.g., tomatoes + basil). Antag
 ## Session Notes
 - **Session 1 (2026-06-13)**: Initial project setup. Created repo, first Supabase project (wrong account — later fixed), env.local skeleton. Market research completed (research/). 74 questions + 13 follow-ups answered. All major product decisions finalized. SeedBox pricing: $14.99/mo + $3.99 shipping. COGS: $8.59/box.
 - **Session 2 (2026-06-14)**: Full pre-coding setup completed. Migrated Supabase to correct account (saahildugar). New Supabase project created fresh (okpspirezabgmevjegmg, us-east-1). PowerSync connected to Supabase — had to create `powersync` publication manually via SQL. All API keys obtained and filled in env.local. Dropped Google Maps (using phzmapi.org). Dropped Anthropic (using Google Gemini free tier). Plant.id URL fixed (rebranded to Kindwise). Stripe in sandbox mode. Testing on Android Studio emulator (Medium Phone API 36). Bundle ID: com.hellogarden.app. Package manager: npm. env.local 100% complete except deferred keys. SESSION_STATE.md created. Decided: UI mockups via Canva MCP BEFORE any code. Also discussed tools to set up (GitHub MCP, Supabase CLI, Stripe CLI, EAS CLI). Session 3 starts with UI mockups + tools setup.
+- **Session 3 (2026-06-14)**: Confirmed Canva MCP connected to 1051549@lwsd.org (LWSD Colors brand kit visible). Completed Phase 1 UI/UX research (Planta, PictureThis, Gardenize, Plant Parent + broader patterns). Completed Phase 2 full UI architecture — 27 screens defined, all 13 product decisions made, navigation model locked (4 bottom tabs). PROD_DOC.md Section 8 fully updated with final design system and screen index. Next: Phase 3 mockups via Canva MCP.
