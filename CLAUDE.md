@@ -213,17 +213,10 @@ Plants that benefit each other when grown nearby (e.g., tomatoes + basil). Antag
 
 ---
 
-## UI Design Plan (Session 3 — IN PROGRESS)
+## UI Design Plan (Session 3 — COMPLETE)
 
 ### Phase 1 — Research COMPLETE (Session 3)
-Competitor research done on Planta, PictureThis, Gardenize, Plant Parent. Key findings:
-- Task-first home screen (not aesthetic-first) is the winning pattern
-- All competitors fail at garden grouping (flat lists only) — HelloGarden's multi-garden approach is a differentiator
-- Streaks are missing from all competitors — opportunity
-- Progressive disclosure on plant detail screens is critical (competitors fail here)
-- Permission pre-prompts with benefit copy (Planta) are worth copying
-- PictureThis subscription popup on every open = do not do this
-- Gardenize's multi-photo growth timeline is a best-in-class pattern to copy
+Competitor research done on Planta, PictureThis, Gardenize, Plant Parent. Full findings in research/ux-research.md.
 
 ### Phase 2 — Architecture COMPLETE (Session 3)
 All 13 product decisions made. Full 27-screen architecture defined. See PROD_DOC.md Section 8.
@@ -239,14 +232,10 @@ Key decisions:
 - **Garden planner**: Sub-screen inside Garden Detail, not in main nav
 - **Encyclopedia**: Inside Explore tab
 - **Dark mode**: System-default + user override in Settings
-- **Typography**: DM Sans / Inter / Plus Jakarta Sans (final at mockup phase)
+- **Typography**: DM Sans / Inter / Plus Jakarta Sans (decision final in code)
 
-### Phase 3 — Mockups (NEXT — pending user approval of architecture)
-- Use Canva MCP to generate visual mockups of all key screens
-- Apply design system: sage green (#7C9A6E), warm cream (#FDF8F0), earthy brown (#8B6F47), charcoal (#2D2D2D)
-- Light + dark mode variants for key screens
-- Real placeholder content (no Lorem Ipsum)
-- Mockup order: Onboarding → Home Dashboard → Plant Detail → Garden View → Encyclopedia → Garden Planner → Plant ID → SeedBox → Auth → AI Chatbot → Settings
+### Phase 3 — Mockups SKIPPED (Session 3 decision)
+Canva MCP was attempted but is an AI design generator, not a precision UI tool. It cannot reliably place specific buttons, labels, and form fields. Mockups were misleading rather than useful. Decision: skip mockups entirely. The Phase 2 architecture doc is the spec. Actual coded React Native screens will serve as the visual reference. This is faster and more accurate.
 
 ## Tools to Set Up (Session 3)
 - **GitHub MCP**: Connect on claude.ai integrations — lets Claude manage GitHub Issues/milestones to track the 7 phases. Do this first.
@@ -271,4 +260,4 @@ Key decisions:
 ## Session Notes
 - **Session 1 (2026-06-13)**: Initial project setup. Created repo, first Supabase project (wrong account — later fixed), env.local skeleton. Market research completed (research/). 74 questions + 13 follow-ups answered. All major product decisions finalized. SeedBox pricing: $14.99/mo + $3.99 shipping. COGS: $8.59/box.
 - **Session 2 (2026-06-14)**: Full pre-coding setup completed. Migrated Supabase to correct account (saahildugar). New Supabase project created fresh (okpspirezabgmevjegmg, us-east-1). PowerSync connected to Supabase — had to create `powersync` publication manually via SQL. All API keys obtained and filled in env.local. Dropped Google Maps (using phzmapi.org). Dropped Anthropic (using Google Gemini free tier). Plant.id URL fixed (rebranded to Kindwise). Stripe in sandbox mode. Testing on Android Studio emulator (Medium Phone API 36). Bundle ID: com.hellogarden.app. Package manager: npm. env.local 100% complete except deferred keys. SESSION_STATE.md created. Decided: UI mockups via Canva MCP BEFORE any code. Also discussed tools to set up (GitHub MCP, Supabase CLI, Stripe CLI, EAS CLI). Session 3 starts with UI mockups + tools setup.
-- **Session 3 (2026-06-14)**: Confirmed Canva MCP connected to 1051549@lwsd.org (LWSD Colors brand kit visible). Completed Phase 1 UI/UX research (Planta, PictureThis, Gardenize, Plant Parent + broader patterns). Completed Phase 2 full UI architecture — 27 screens defined, all 13 product decisions made, navigation model locked (4 bottom tabs). PROD_DOC.md Section 8 fully updated with final design system and screen index. Next: Phase 3 mockups via Canva MCP.
+- **Session 3 (2026-06-14)**: Confirmed Canva MCP connected to 1051549@lwsd.org. Completed Phase 1 UI/UX research (Planta, PictureThis, Gardenize, Plant Parent). Completed Phase 2 full UI architecture — 27 screens defined, all 13 product decisions made, 4-tab navigation locked. Attempted Phase 3 mockups via Canva MCP — abandoned. Canva AI generation is not a precision UI tool and produces inaccurate layouts. Decision: architecture doc is the spec, coded screens are the visual reference. Next: Phase 1 coding (Expo project init).
