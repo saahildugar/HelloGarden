@@ -6,9 +6,42 @@
 
 ## WHERE WE LEFT OFF
 
-**We finished all pre-coding setup. The very next thing to do is initialize the Expo project (Phase 1, Step 1).**
+**Before coding begins, we are doing UI mockups first using the Canva MCP (Option B). This happens BEFORE Phase 1.**
 
-Tell Claude: *"Let's start Phase 1 — initialize the Expo project."*
+Tell Claude: *"Let's do the UI mockups using the Canva MCP before we start coding."*
+
+---
+
+## NEXT SESSION PLAN: UI MOCKUPS FIRST (PRE-PHASE 1)
+
+### Why we're doing this
+Competitors like Planta, Greg, and Blossom have polished, professional UIs that are a major part of why users choose them. HelloGarden needs to match or beat that quality. Designing visually first — before writing a single line of code — means we can see exactly what the app will look like, react to it, refine it, and then build to a clear, approved target. This prevents costly redesigns mid-code and ensures every screen is intentional.
+
+### The plan (Option B)
+Claude will use the **Canva MCP** (already connected) to generate actual visual mockups of every key screen. These are real, reviewable designs — not just text descriptions. You review each one, give feedback, and Claude iterates until you're happy. Once approved, Claude documents the finalized designs into PROD_DOC.md as the official UI spec, and THEN Phase 1 coding begins with a crystal-clear visual target for every screen.
+
+### Screens to mockup (in this order)
+1. **Onboarding flow** (4 screens): Welcome/splash, ZIP + experience + garden type setup, first garden creation, SeedBox intro pitch
+2. **Home dashboard**: Today's care task list, weather widget, garden overview cards, SeedBox status banner
+3. **Plant detail screen**: Plant photo, care schedule, last-watered status, log care button, photo journal tab
+4. **Garden view**: All plants in a garden, grid/list toggle, add plant button
+5. **Plant encyclopedia**: Search/browse UI, plant card, full plant detail with care instructions
+6. **Visual garden planner**: Drag-and-drop grid, companion planting warning overlays
+7. **Plant ID camera**: Camera viewfinder, capture button, result screen (species + confidence + encyclopedia link)
+8. **SeedBox screens**: Subscription pitch screen, seed selection (pick 5 of 9-10), active subscription management, order history
+9. **Auth screens**: Sign up, sign in, social login buttons
+10. **AI chatbot**: Chat UI, message bubbles, suggested prompts
+11. **Settings + profile**: User profile, notification preferences, data export, subscription management
+
+### What Claude will do for each mockup
+- Generate a high-fidelity visual mockup using the Canva MCP
+- Apply the HelloGarden design system: sage green (#7C9A6E), warm cream (#FDF8F0), earthy brown (#8B6F47), dark charcoal text (#2D2D2D)
+- Show both light and dark mode variants for key screens
+- Include real placeholder content (not "Lorem ipsum" — actual plant names, real care instructions, realistic data)
+- Annotate key interactions and states (empty state, loading state, error state)
+
+### After mockups are approved
+Claude updates PROD_DOC.md Section 8 (Design System) with the full, screen-by-screen UI spec, then proceeds to Phase 1 coding with the approved designs as the blueprint.
 
 ---
 
