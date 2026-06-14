@@ -132,6 +132,20 @@ Claude updates PROD_DOC.md Section 8 (Design System) with the full, screen-by-sc
 
 ---
 
+## DISCUSS NEXT SESSION
+
+### Tools & Add-ons to Set Up
+Discussed at end of Session 2 — decide and act on these next session:
+
+- **GitHub MCP** (most valuable, do first): Official GitHub MCP connector. Lets Claude create/manage GitHub Issues, PRs, and milestones directly. Plan is to use it to track each of the 7 phases as a GitHub project board — Claude can open and close issues as steps are completed. Available on claude.ai integrations page. Highly recommended before coding starts.
+- **Figma MCP**: Higher-fidelity design alternative to Canva if needed. Requires a Figma account. Lower priority since Canva MCP is already connected and being used for mockups.
+- **Supabase CLI** (install locally): `npm install -g supabase`. Lets us run DB migrations locally, manage Edge Functions, and auto-generate TypeScript types from the schema. Very useful starting Phase 1.
+- **Stripe CLI** (install locally): For testing webhooks during Phase 5 without needing a public URL. Install from stripe.com/docs/stripe-cli. Not needed until Phase 5.
+- **EAS CLI** (install locally): `npm install -g eas-cli`. For building and submitting the app. Not needed until Phase 7.
+- **`/simplify` Claude skill**: Already available — use it after Claude writes chunks of code to review for quality, redundancy, and efficiency. Make a habit of it.
+
+---
+
 ## THINGS DEFERRED (don't forget)
 - **STRIPE_WEBHOOK_SECRET**: Add after Phase 5 Edge Function deployment. URL: `https://okpspirezabgmevjegmg.supabase.co/functions/v1/stripe-webhook`
 - **Shipment tracking API**: EasyPost or Shippo — TBD. Choose in Phase 5.

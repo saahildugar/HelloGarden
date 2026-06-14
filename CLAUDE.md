@@ -213,6 +213,21 @@ Plants that benefit each other when grown nearby (e.g., tomatoes + basil). Antag
 
 ---
 
+## UI Design Plan (Pre-Coding — Session 3)
+- **Before any code is written**, Claude will use the Canva MCP to generate visual mockups of all key screens
+- User reviews and approves mockups, Claude iterates until satisfied
+- Approved designs get documented into PROD_DOC.md Section 8 as the official UI spec
+- THEN Phase 1 coding begins with a clear visual target for every screen
+- Screens to mockup: onboarding (4 screens), home dashboard, plant detail, garden view, encyclopedia, garden planner, Plant ID camera, SeedBox screens, auth screens, AI chatbot, settings
+- Design language: sage green (#7C9A6E), warm cream (#FDF8F0), earthy brown (#8B6F47), charcoal text (#2D2D2D), light + dark mode variants, real placeholder content (not Lorem Ipsum)
+
+## Tools to Set Up (Session 3)
+- **GitHub MCP**: Connect on claude.ai integrations — lets Claude manage GitHub Issues/milestones to track the 7 phases. Do this first.
+- **Supabase CLI**: `npm install -g supabase` — for local migrations, Edge Functions, TypeScript type generation. Do before Phase 1 coding.
+- **Stripe CLI**: Install from stripe.com/docs/stripe-cli — for local webhook testing. Do in Phase 5.
+- **EAS CLI**: `npm install -g eas-cli` — for building/submitting app. Do in Phase 7.
+- **`/simplify` skill**: Already available in Claude Code — run after writing code chunks to review quality.
+
 ## Deferred / Come Back To
 - **STRIPE_WEBHOOK_SECRET**: Add after Phase 5 — deploy Supabase Edge Function first. Webhook URL: `https://okpspirezabgmevjegmg.supabase.co/functions/v1/stripe-webhook`. Register in Stripe Dashboard → Developers → Webhooks. Use Stripe CLI (`stripe listen`) for local testing.
 - **Shipment tracking API**: EasyPost or Shippo — TBD. Choose and add to env.local in Phase 5. Add `SHIPMENT_TRACKING_API_KEY` placeholder when decided.
@@ -228,4 +243,4 @@ Plants that benefit each other when grown nearby (e.g., tomatoes + basil). Antag
 
 ## Session Notes
 - **Session 1 (2026-06-13)**: Initial project setup. Created repo, first Supabase project (wrong account — later fixed), env.local skeleton. Market research completed (research/). 74 questions + 13 follow-ups answered. All major product decisions finalized. SeedBox pricing: $14.99/mo + $3.99 shipping. COGS: $8.59/box.
-- **Session 2 (2026-06-14)**: Full pre-coding setup completed. Migrated Supabase to correct account (saahildugar). New Supabase project created fresh (okpspirezabgmevjegmg, us-east-1). PowerSync connected to Supabase — had to create `powersync` publication manually via SQL. All API keys obtained and filled in env.local. Dropped Google Maps (using phzmapi.org). Dropped Anthropic (using Google Gemini free tier). Plant.id URL fixed (rebranded to Kindwise). Stripe in sandbox mode. Testing on Android Studio emulator (Medium Phone API 36). Bundle ID: com.hellogarden.app. Package manager: npm. env.local 100% complete except deferred keys. SESSION_STATE.md created. Ready to begin coding in Session 3.
+- **Session 2 (2026-06-14)**: Full pre-coding setup completed. Migrated Supabase to correct account (saahildugar). New Supabase project created fresh (okpspirezabgmevjegmg, us-east-1). PowerSync connected to Supabase — had to create `powersync` publication manually via SQL. All API keys obtained and filled in env.local. Dropped Google Maps (using phzmapi.org). Dropped Anthropic (using Google Gemini free tier). Plant.id URL fixed (rebranded to Kindwise). Stripe in sandbox mode. Testing on Android Studio emulator (Medium Phone API 36). Bundle ID: com.hellogarden.app. Package manager: npm. env.local 100% complete except deferred keys. SESSION_STATE.md created. Decided: UI mockups via Canva MCP BEFORE any code. Also discussed tools to set up (GitHub MCP, Supabase CLI, Stripe CLI, EAS CLI). Session 3 starts with UI mockups + tools setup.
