@@ -1,123 +1,131 @@
 # HelloGarden — Session State
 > **Purpose**: Exact snapshot of where we left off. Read this at the start of every new session to pick up instantly.
-> **Last Updated**: 2026-06-14 (End of Session 3)
+> **Last Updated**: 2026-06-14 (End of Session 3 — Phase 1 complete)
 
 ---
 
 ## WHERE WE LEFT OFF
 
-**Phase 1 coding is NEXT.** All pre-coding work is complete. No mockups — the architecture doc is the spec, coded screens are the visual reference.
+**Phase 1 is COMPLETE. Phase 2 — Auth & Onboarding is NEXT.**
 
-Tell Claude: *"Let's start Phase 1 — initialize the Expo project and set everything up."*
+Tell Claude: *"Let's start Phase 2 — Auth and Onboarding."*
 
 ---
 
 ## CURRENT STATUS
 
-### What's Done
+### Pre-Coding (All Done)
 - [x] Product decisions finalized (PROD_DOC.md)
 - [x] GitHub repo: https://github.com/saahildugar/HelloGarden
 - [x] Supabase project: okpspirezabgmevjegmg (us-east-1, saahildugar account)
 - [x] PowerSync connected to Supabase (`powersync` publication created)
-- [x] All API keys in env.local (100% complete except deferred keys)
-- [x] Market research: research/market-research.md
-- [x] SeedBox cost analysis: research/seedbox-cost-analysis.md
-- [x] UI/UX competitor research: research/ux-research.md
+- [x] All API keys in env.local (see table below)
+- [x] Market research, SeedBox cost analysis, UI/UX research (research/)
 - [x] Full UI architecture: 27 screens, all product decisions, 4-tab nav (PROD_DOC.md Section 8)
-- [x] Mockups: SKIPPED — Canva AI not precise enough. Architecture doc is the spec.
+- [x] Mockups: SKIPPED — architecture doc is the spec, coded screens are the visual reference
 
-### Phase 1 COMPLETE
-- [x] Expo project initialized — Expo SDK 56, React 19, RN 0.85.3
-- [x] All packages installed (Supabase, WatermelonDB, PowerSync, Zustand, Stripe, Sentry, Gemini, all Expo packages)
+### Phase 1 — Project Foundation (COMPLETE)
+- [x] Expo SDK 56 / React 19.2.3 / React Native 0.85.3 initialized
+- [x] All packages installed:
+  - Supabase JS, WatermelonDB, PowerSync, Zustand
+  - Stripe React Native, Sentry, Gemini AI
+  - expo-router, expo-camera, expo-notifications, expo-image-picker
+  - expo-location, expo-secure-store, expo-font, expo-constants
+  - expo-splash-screen, expo-dev-client, expo-linking
+  - react-native-reanimated, react-native-gesture-handler, react-native-screens, react-native-safe-area-context
 - [x] Folder structure: /app /components /hooks /stores /lib /types /constants /db /assets
-- [x] app.config.ts — bundle ID com.hellogarden.app, all plugins, env loading via dotenv
-- [x] Design system: constants/Colors.ts, Typography.ts, Spacing.ts + hooks/useTheme.ts
-- [x] Expo Router shell: root _layout, index redirect, 4-tab layout (Home/Garden/Explore/SeedBox)
-- [x] lib/supabase.ts + lib/env.ts wired to env.local
-- [x] types/database.ts — full TypeScript types for all 14 tables
-- [x] Supabase schema: 14 tables, all indexes, all RLS policies, auto-profile trigger
+- [x] app.config.ts — bundle ID com.hellogarden.app, all plugins, dotenv loads env.local
+- [x] babel.config.js — includes reanimated plugin
+- [x] metro.config.js — .mjs support for WatermelonDB
+- [x] Design system files:
+  - constants/Colors.ts — full color palette + Theme (light/dark)
+  - constants/Typography.ts — all text styles
+  - constants/Spacing.ts — spacing, border radius, shadows, MIN_TOUCH_TARGET
+  - hooks/useTheme.ts — system-aware theme hook
+- [x] Expo Router shell:
+  - app/_layout.tsx — root layout, splash screen, StatusBar
+  - app/index.tsx — redirects to /(tabs)
+  - app/(tabs)/_layout.tsx — 4-tab layout (Home / Garden / Explore / SeedBox)
+  - app/(tabs)/index.tsx — Home placeholder
+  - app/(tabs)/garden.tsx — Garden placeholder
+  - app/(tabs)/explore.tsx — Explore placeholder
+  - app/(tabs)/seedbox.tsx — SeedBox placeholder
+- [x] lib/env.ts — type-safe access to all env vars
+- [x] lib/supabase.ts — Supabase client with SecureStore session persistence
+- [x] types/database.ts — full TypeScript types for all 14 Supabase tables
+- [x] Supabase schema: 14 tables, all indexes, all RLS policies, auto-profile trigger on signup
 - [x] TypeScript: zero errors
-- [ ] PowerSync sync rules not configured (Phase 3)
-- [ ] WatermelonDB schema not created yet (Phase 3)
+- [x] Committed to GitHub (commit: f0f94f9)
+
+### What's NOT Done Yet
+- [ ] Phase 2: Auth screens + onboarding flow — NEXT
+- [ ] Phase 3: Core app (home dashboard, plant tracking, encyclopedia, care reminders, offline layer)
+- [ ] Phase 4: Features (planner, Plant ID, weather, photo journal, calendar)
+- [ ] Phase 5: Monetization (SeedBox + Stripe)
+- [ ] Phase 6: AI + Polish
+- [ ] Phase 7: Launch Prep
 
 ---
 
-## NEXT STEPS IN ORDER
+## NEXT STEPS — PHASE 2: AUTH & ONBOARDING
 
-### ~~Step 1 — Phase 1: Project Foundation~~ COMPLETE
+### What to build:
+1. **Auth store (Zustand)** — `stores/authStore.ts`
+   - Session state, user profile, loading/error states
+   - Subscribe to `supabase.auth.onAuthStateChange`
 
-### Step 2 — Phase 2: Auth & Onboarding ← NEXT
+2. **Auth screens** — `app/(auth)/`
+   - `_layout.tsx` — auth stack layout
+   - `sign-in.tsx` — email + password + Google + Apple buttons
+   - `sign-up.tsx` — email + password + confirm + social buttons
+   - Supabase Auth calls wired to authStore
 
-1. **Initialize Expo project**: `npx create-expo-app@latest HelloGarden --template blank-typescript` with bundle ID `com.hellogarden.app`
-2. **Install all packages**:
-   - Supabase: `@supabase/supabase-js`
-   - Expo Router: `expo-router`
-   - WatermelonDB: `@nozbe/watermelondb`
-   - PowerSync: `@powersync/react-native`
-   - Zustand: `zustand`
-   - Stripe: `@stripe/stripe-react-native`
-   - Sentry: `@sentry/react-native`
-   - Gemini: `@google/generative-ai`
-   - Expo packages: `expo-camera`, `expo-notifications`, `expo-image-picker`, `expo-constants`, `expo-location`, `expo-secure-store`, `expo-font`
-3. **Folder structure**:
-   ```
-   /app          — Expo Router file-based routes
-   /components   — reusable UI components
-   /hooks        — custom React hooks
-   /stores       — Zustand state stores
-   /lib          — API clients (supabase, kindwise, openweather, gemini)
-   /types        — TypeScript interfaces
-   /assets       — fonts, images, icons
-   /constants    — design tokens (colors, spacing, typography)
-   /db           — WatermelonDB schema + models
-   ```
-4. **Wire env.local**: via `expo-constants` + `app.config.ts`
-5. **Design system file**: colors, typography, spacing, dark/light theme tokens (from architecture decisions)
-6. **Supabase schema**: all tables + foreign keys + indexes + RLS policies
+3. **Onboarding screens** — `app/onboarding/`
+   - `_layout.tsx` — onboarding stack (no gestures back)
+   - `welcome.tsx` — Screen 1: logo, tagline, "Get Started", "Sign In" link
+   - `setup.tsx` — Screen 2: ZIP input + zone detection (phzmapi.org) + experience chips + garden type chips
+   - `create-garden.tsx` — Screen 3: garden name input + emoji picker + type display + "Create Garden"
 
-### Step 2 — Phase 2: Auth & Onboarding
-7. Auth screens: sign up, sign in, Google OAuth, Apple OAuth, anonymous guest
-8. Auth state (Zustand + Supabase session)
-9. Onboarding (3 screens): Welcome → Setup (ZIP/experience/garden type) → Create First Garden
-10. Persist: ZIP → phzmapi.org → USDA zone, save to user profile
+4. **Navigation guard** — update `app/_layout.tsx`
+   - Check auth state on mount
+   - No session + no onboarding → redirect to `/onboarding/welcome`
+   - No session + onboarding complete → redirect to `/(auth)/sign-in`
+   - Session exists → redirect to `/(tabs)`
 
-### Step 3 — Phase 3: Core App (P0)
-11. Home dashboard: today's tasks, weather widget (OpenWeather), garden health card, streak counter
-12. Plant tracking: add plant, view, edit, delete, log care
-13. Multiple gardens: create/name/switch
-14. Plant encyclopedia: seed 500+ plants from open-source data, search UI
-15. Care reminders: compute next-care dates, home screen task list, critical push notifications
-16. Offline layer: WatermelonDB schema, PowerSync sync rules
+5. **API utility** — `lib/zones.ts`
+   - `getZoneFromZip(zip: string)` — calls phzmapi.org, returns USDA zone string
+   - Called during onboarding setup screen after ZIP entry
 
-### Step 4 — Phase 4: P1 Features
-17. Visual garden planner (drag-and-drop, companion warnings)
-18. Plant ID camera (Kindwise API)
-19. Disease/pest diagnosis camera (Kindwise health endpoint)
-20. Weather integration (OpenWeather, frost alerts, rain-skip logic)
-21. Photo journal (growth timeline, plant growth animations)
-22. Seasonal planting calendar (phzmapi.org zones)
+6. **Profile persistence** — save onboarding data to Supabase `profiles` table on completion
 
-### Step 5 — Phase 5: Monetization
-23. SeedBox subscription flow (Stripe)
-24. Seed selection UI (pick 5 of 9-10)
-25. Supabase Edge Function: Stripe webhook handler
-26. Add STRIPE_WEBHOOK_SECRET to env.local after Edge Function deployed
-27. Order history screen
-28. Shipment tracking (EasyPost or Shippo — choose then add key)
-29. Gift subscription flow
+### Design notes for Phase 2:
+- All screens use `SafeAreaView` with `theme.background` fill
+- Input fields: white fill, `BorderRadius.lg` (14px), subtle border (`theme.border`)
+- Chips: pill shape (`BorderRadius.full`), selected = sagePrimary fill + white text
+- Primary button: full width, sagePrimary fill, white semibold text, `BorderRadius.lg`
+- Progress dots: small filled/hollow circles, centered
+- Permission pre-prompts: show benefit copy BEFORE system dialog (Planta pattern — increases opt-in)
 
-### Step 6 — Phase 6: AI + Polish
-30. AI chatbot (Gemini API, usage limits free vs. subscriber)
-31. Family/shared gardens (invite link, anonymous auth)
-32. Sentry instrumentation
-33. Accessibility audit (WCAG AA)
-34. Dark mode audit across all screens
+---
 
-### Step 7 — Phase 7: Launch Prep
-35. EAS Build (eas.json for iOS + Android)
-36. App Store assets (screenshots, descriptions, preview video)
-37. TestFlight + Google Play internal testing
-> User must do: Apple Developer Account ($99/yr), Google Play Console ($25), logo assets
+## IMPORTANT TECHNICAL NOTES
+
+### Running the app
+- **DO NOT use `npx expo start` + Expo Go** — WatermelonDB and PowerSync require native modules
+- **Use `npx expo run:android`** to build and run on the Android emulator (Medium Phone API 36)
+- First run will take longer (native build). Subsequent runs are faster.
+- Ensure Android Studio emulator is running before executing the command
+
+### Package manager
+- **npm** (not yarn, not bun)
+- Use `--legacy-peer-deps` if adding new packages that have React 19 peer dep issues
+
+### Key file locations
+- Design tokens: `constants/Colors.ts`, `constants/Typography.ts`, `constants/Spacing.ts`
+- Theme hook: `hooks/useTheme.ts`
+- Supabase client: `lib/supabase.ts`
+- Env vars: `lib/env.ts` (reads from `env.local` via dotenv in app.config.ts)
+- DB types: `types/database.ts`
 
 ---
 
@@ -140,47 +148,67 @@ Tell Claude: *"Let's start Phase 1 — initialize the Expo project and set every
 
 ---
 
+## SUPABASE SCHEMA (14 tables — all live)
+
+| Table | RLS | Purpose |
+|---|---|---|
+| `profiles` | ✅ | User profile, zone, experience, garden types |
+| `gardens` | ✅ | User's named gardens |
+| `garden_members` | ✅ | Shared garden access |
+| `plant_species` | ✅ (public read) | Encyclopedia data |
+| `companion_planting` | ✅ (public read) | Companion/antagonist pairs |
+| `plants` | ✅ | User's actual plants |
+| `care_logs` | ✅ | Watering/fertilizing logs |
+| `plant_photos` | ✅ | Growth journal photos |
+| `care_schedules` | ✅ | Next-due-date per plant per care type |
+| `seedbox_subscriptions` | ✅ | Stripe subscription records |
+| `seedbox_orders` | ✅ | Monthly box orders |
+| `seed_options` | ✅ (public read) | Monthly curated seed catalog |
+| `seedbox_order_seeds` | ✅ | Seeds selected per order |
+| `plant_id_usage` | ✅ | Free tier usage tracking |
+
+Auto-trigger: new auth user → auto-creates `profiles` row.
+
+---
+
 ## KEY DECISIONS QUICK REFERENCE
 
-### Navigation
+### Architecture (27 screens — PROD_DOC.md Section 8)
 - 4 bottom tabs: Home / Garden / Explore / SeedBox
-- Profile + Settings: avatar in Home header
-- FAB (+): Add Plant inside Garden Detail
+- Onboarding: 3 screens (Welcome / Setup / Create First Garden)
+- SeedBox pitch: post-first-plant card only (never in onboarding)
+- Plant detail: 3 tabs (Care / Journal / Info)
+- Garden planner: sub-screen of Garden Detail (Planner tab)
+- Encyclopedia: inside Explore tab
+- Streak: daily care streak on home screen
 
-### Design tokens (LOCKED)
+### Design tokens
 - Sage green `#7C9A6E` — primary actions
 - Warm cream `#FDF8F0` — backgrounds
 - Earthy brown `#8B6F47` — secondary accents
 - Charcoal `#2D2D2D` — text
 - Warm red `#D64545` — alerts only
-- Typography: DM Sans / Inter / Plus Jakarta Sans
-
-### Architecture (27 screens — see PROD_DOC.md Section 8)
-- Onboarding: 3 screens (Welcome / Setup / Create First Garden)
-- SeedBox pitch: post-first-plant card only (never in onboarding)
-- Plant detail: 3 tabs (Care / Journal / Info)
-- Garden planner: sub-screen of Garden Detail
-- Encyclopedia: inside Explore tab
-- Streak: daily care streak on home screen
+- Typography: DM Sans target (system font fallback until expo-font loads)
 
 ### Tech
 - Bundle ID: com.hellogarden.app
 - Package manager: npm
-- Testing: Android Studio emulator (Medium Phone API 36)
+- Testing: `npx expo run:android` on Android Studio emulator (Medium Phone API 36)
 - Stripe: sandbox/test mode during dev
 - Conflict resolution: last-write-wins
 
 ---
 
 ## TOOLS STILL TO SET UP
-- **GitHub MCP**: Add via claude.ai integrations page (not yet done)
-- **Supabase CLI**: `npm install -g supabase` — do at Phase 1 start
+- **GitHub MCP**: Add via claude.ai integrations page (not yet done — not blocking)
 - **Stripe CLI**: Install at Phase 5
-- **EAS CLI**: `npm install -g eas-cli` — do at Phase 7
+- **EAS CLI**: `npm install -g eas-cli` — Phase 7 only
 
 ## THINGS DEFERRED
 - `STRIPE_WEBHOOK_SECRET`: After Phase 5 Edge Function deployed
 - Shipment tracking provider: EasyPost or Shippo — decide in Phase 5
-- Apple Developer Account + Google Play Console: Phase 7
+- Apple Developer Account ($99/yr) + Google Play Console ($25): Phase 7
 - hellogarden.com domain: buy near launch
 - Logo: user generates — not blocking code
+- PowerSync sync rules: configure in Phase 3
+- WatermelonDB schema: build in Phase 3
