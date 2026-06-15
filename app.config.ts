@@ -62,6 +62,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       },
     ],
     '@sentry/react-native/expo',
+    'expo-web-browser',
   ],
   experiments: {
     typedRoutes: true,

@@ -3,6 +3,8 @@
  * Airy overall, dense where action is needed.
  */
 
+import type { ViewStyle } from 'react-native';
+
 export const Spacing = {
   xs: 4,
   sm: 8,
@@ -24,7 +26,7 @@ export const BorderRadius = {
   full: 9999,
 } as const;
 
-export const Shadow = {
+export const Shadow: Record<'sm' | 'md' | 'lg', ViewStyle> = {
   sm: {
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
@@ -46,7 +48,7 @@ export const Shadow = {
     shadowRadius: 12,
     elevation: 6,
   },
-} as const;
+};
 
 // Minimum touch target — WCAG AA
 export const MIN_TOUCH_TARGET = 44;
