@@ -224,11 +224,7 @@ The revenue driver is **SeedBox**: a monthly subscription delivering 5 curated s
 - User creates their first garden space after onboarding
 - Guided flow: name it, pick type, add first plant (manual or camera ID)
 
-### Step 4: SeedBox Introduction
-- Shown after user adds their first plant (natural conversion moment)
-- Brief pitch: "Get curated seeds delivered monthly, picked for YOUR garden"
-- "Try your first box FREE" CTA
-- Can dismiss and revisit later
+*(No SeedBox pitch in onboarding — user experiences the app first. SeedBox pitch lives in the SeedBox tab as a first-visit experience. See Phase 5.)*
 
 ### SeedBox-Specific Onboarding (when subscribing)
 - Garden size
@@ -328,7 +324,7 @@ Bottom Tab Bar (4 tabs)
 2. Onboarding — Welcome
 3. Onboarding — Setup (ZIP / experience / garden type)
 4. Onboarding — Create First Garden
-5. SeedBox Intro Card (dismissible, shown post-first-plant)
+5. SeedBox Intro Card (dismissible, shown on first SeedBox tab visit — Phase 5)
 6. Home Dashboard
 7. Garden Tab (all gardens)
 8. Garden Detail (plant grid inside a garden)
@@ -362,7 +358,7 @@ Bottom Tab Bar (4 tabs)
 - **SeedBox tab**: Changes appearance for subscribers (ribbon on icon, management UI vs. pitch UI)
 - **Garden planner**: Sub-screen inside Garden Detail (Planner tab), not in main nav
 - **Encyclopedia**: Inside Explore tab — not a standalone nav entry
-- **SeedBox placement**: Never in onboarding. Pitch card appears after first plant added (dismissible, 7-day cooldown).
+- **SeedBox placement**: Never in onboarding. Pitch card appears on first visit to the SeedBox tab (dismissible). Implemented in Phase 5.
 
 ---
 
@@ -465,7 +461,7 @@ Bottom Tab Bar (4 tabs)
 *All done by Claude.*
 7. Auth screens: sign up (email), sign in (email), Google OAuth, Apple OAuth, anonymous guest access
 8. Auth state management (Zustand + Supabase session)
-9. Onboarding flow (4 screens): Welcome → ZIP/experience/garden-type → First garden creation → SeedBox intro pitch
+9. Onboarding flow (3 screens): Welcome → ZIP/experience/garden-type → First garden creation. No SeedBox pitch in onboarding — user experiences the app first.
 10. Persist onboarding data: save ZIP, zone (via phzmapi.org), experience level, garden type to Supabase user profile
 
 ### Phase 3 — Core App (P0 Features)
@@ -488,27 +484,28 @@ Bottom Tab Bar (4 tabs)
 
 ### Phase 5 — Monetization (P0 + P1)
 *Claude builds code. User configures Stripe dashboard.*
-23. SeedBox subscription flow: Stripe React Native SDK, subscribe button, billing screen, cancel/pause flow
-24. SeedBox seed selection UI: browse 9-10 curated monthly options, pick 5, confirm order
-25. Supabase Edge Function: Stripe webhook handler for subscription events (created, updated, canceled, payment_failed)
-26. Add STRIPE_WEBHOOK_SECRET to env.local after Edge Function deployed
-27. Order history screen
-28. Shipment tracking: integrate chosen provider (EasyPost or Shippo), in-app tracking status screen
-29. Gift subscription purchase flow
+23. SeedBox tab first-visit pitch / empty state: shown when non-subscriber opens SeedBox tab for the first time. Dismissible. "Try your first box FREE" CTA. (Pitch lives here — NOT in onboarding.)
+24. SeedBox subscription flow: Stripe React Native SDK, subscribe button, billing screen, cancel/pause flow
+25. SeedBox seed selection UI: browse 9-10 curated monthly options, pick 5, confirm order
+26. Supabase Edge Function: Stripe webhook handler for subscription events (created, updated, canceled, payment_failed)
+27. Add STRIPE_WEBHOOK_SECRET to env.local after Edge Function deployed
+28. Order history screen
+29. Shipment tracking: integrate chosen provider (EasyPost or Shippo), in-app tracking status screen
+30. Gift subscription purchase flow
 
 ### Phase 6 — AI, Sharing & Polish (P2)
 *All done by Claude.*
-30. AI garden chatbot: Gemini API integration, chat UI, free vs. subscriber usage limits (track monthly query count)
-31. Family/shared gardens: generate invite link (shareable URL), recipient opens app → anonymous Supabase auth → joined as garden member with equal edit access
-32. Sentry instrumentation: error boundaries on all screens, performance tracing, user context
-33. Accessibility audit: WCAG AA, minimum 44pt touch targets, screen reader labels, contrast check
-34. Dark mode: audit and finalize all screens for both light/dark
+31. AI garden chatbot: Gemini API integration, chat UI, free vs. subscriber usage limits (track monthly query count)
+32. Family/shared gardens: generate invite link (shareable URL), recipient opens app → anonymous Supabase auth → joined as garden member with equal edit access
+33. Sentry instrumentation: error boundaries on all screens, performance tracing, user context
+34. Accessibility audit: WCAG AA, minimum 44pt touch targets, screen reader labels, contrast check
+35. Dark mode: audit and finalize all screens for both light/dark
 
 ### Phase 7 — Launch Prep
 *Mix of Claude and user actions.*
-35. EAS Build configuration: `eas.json` for iOS + Android, internal/preview/production profiles
-36. App Store assets: icon, screenshots (iPhone + Android), preview video, description, keywords
-37. TestFlight setup: internal testing build distributed via TestFlight
-38. Google Play internal testing track
-39. Final QA: end-to-end flows on real devices
+36. EAS Build configuration: `eas.json` for iOS + Android, internal/preview/production profiles
+37. App Store assets: icon, screenshots (iPhone + Android), preview video, description, keywords
+38. TestFlight setup: internal testing build distributed via TestFlight
+39. Google Play internal testing track
+40. Final QA: end-to-end flows on real devices
 > **User must do**: Apple Developer Account ($99/yr), Google Play Console ($25), logo/branding assets, App Store copy review

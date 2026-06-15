@@ -10,9 +10,10 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import * as WebBrowser from 'expo-web-browser';
 import { makeRedirectUri } from 'expo-auth-session';
+import * as AppleAuthentication from 'expo-apple-authentication';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@/hooks/useTheme';
 import { Colors } from '@/constants/Colors';
@@ -34,6 +35,12 @@ export default function SignInScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [oauthLoading, setOauthLoading] = useState(false);
+  const [appleLoading, setAppleLoading] = useState(false);
+  const [appleAvailable, setAppleAvailable] = useState(false);
+
+  useEffect(() => {
+    AppleAuthentication.isAvailableAsync().then(setAppleAvailable);
+  }, []);
 
   const handleSignIn = async () => {
     if (!email.trim() || !password) return;
@@ -62,6 +69,31 @@ export default function SignInScreen() {
         `We sent a password reset link to ${email.trim().toLowerCase()}. It may take a moment to arrive.`,
         [{ text: 'OK' }]
       );
+    }
+  };
+
+  const handleAppleSignIn = async () => {
+    setAppleLoading(true);
+    clearError();
+    try {
+      const credential = await AppleAuthentication.signInAsync({
+        requestedScopes: [
+          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+          AppleAuthentication.AppleAuthenticationScope.EMAIL,
+        ],
+      });
+      if (!credential.identityToken) throw new Error('No identity token returned from Apple.');
+      const { error } = await supabase.auth.signInWithIdToken({
+        provider: 'apple',
+        token: credential.identityToken,
+      });
+      if (error) throw error;
+      // Navigation handled by auth guard in _layout.tsx
+    } catch (err: any) {
+      if (err.code === 'ERR_REQUEST_CANCELED') return; // user dismissed — silent
+      Alert.alert('Apple Sign-In failed', err.message ?? 'Please try again.');
+    } finally {
+      setAppleLoading(false);
     }
   };
 
@@ -212,12 +244,21 @@ export default function SignInScreen() {
               label="Continue with Google"
               onPress={handleGoogleSignIn}
               isLoading={oauthLoading}
-              disabled={isLoading || oauthLoading}
+              disabled={isLoading || oauthLoading || appleLoading}
               leftIcon={
                 <Text style={styles.googleG}>G</Text>
               }
               style={[styles.socialBtn, Shadow.sm]}
             />
+            {appleAvailable && (
+              <AppleAuthentication.AppleAuthenticationButton
+                buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
+                buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
+                cornerRadius={8}
+                style={[styles.socialBtn, styles.appleBtn]}
+                onPress={handleAppleSignIn}
+              />
+            )}
           </View>
 
           {/* Sign up link */}
@@ -311,6 +352,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'DMSans_700Bold',
     color: '#4285F4',
+  },
+  appleBtn: {
+    height: 48,
   },
 
   // Footer

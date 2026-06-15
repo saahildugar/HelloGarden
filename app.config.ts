@@ -63,6 +63,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     ],
     '@sentry/react-native/expo',
     'expo-web-browser',
+    'expo-apple-authentication',
   ],
   experiments: {
     typedRoutes: true,
