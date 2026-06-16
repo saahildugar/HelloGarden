@@ -1,6 +1,7 @@
 import { View, StyleSheet, ScrollView, RefreshControl, ActivityIndicator, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useState, useCallback } from 'react';
+import { useRouter } from 'expo-router';
 import { useTheme } from '@/hooks/useTheme';
 import { Colors } from '@/constants/Colors';
 import { Typography } from '@/constants/Typography';
@@ -16,6 +17,7 @@ import { EmptyGardenState } from '@/components/home/EmptyGardenState';
 
 export default function HomeScreen() {
   const theme = useTheme();
+  const router = useRouter();
   const [refreshing, setRefreshing] = useState(false);
 
   const {
@@ -118,17 +120,21 @@ export default function HomeScreen() {
         </View>
 
         {/* Garden cards (full-bleed horizontal scroll) */}
-        <GardenCards gardens={gardens} />
+        <GardenCards gardens={gardens} onGardenPress={() => router.push('/(tabs)/garden')} />
 
         {/* Main content area */}
         {showEmptyState ? (
-          <EmptyGardenState hasGardens={gardens.length > 0} />
+          <EmptyGardenState
+            hasGardens={gardens.length > 0}
+            onAddPlant={() => router.push('/(tabs)/garden')}
+            onCreateGarden={() => router.push('/(tabs)/garden')}
+          />
         ) : (
           <TaskSection tasks={todayTasks} onComplete={onCompleteTask} />
         )}
 
         {/* SeedBox banner */}
-        <SeedBoxBanner status={seedBoxStatus} />
+        <SeedBoxBanner status={seedBoxStatus} onPress={() => router.push('/(tabs)/seedbox')} />
 
         {/* Bottom spacer */}
         <View style={{ height: Spacing.xl }} />

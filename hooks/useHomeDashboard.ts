@@ -5,6 +5,7 @@ import { useWeather } from './useWeather';
 
 export function useHomeDashboard() {
   const user = useAuthStore((s) => s.user);
+  const authLoading = useAuthStore((s) => s.isLoading);
   const profile = useAuthStore((s) => s.profile);
   const {
     gardens,
@@ -21,10 +22,14 @@ export function useHomeDashboard() {
   const { weather, isLoading: weatherLoading, error: weatherError, refresh: refreshWeather } = useWeather();
 
   useEffect(() => {
+    if (authLoading) return; // Wait for auth to finish initializing
     if (user?.id) {
       fetchDashboard(user.id);
+    } else {
+      // No user (anonymous auth failed, or no session) — stop loading so UI renders
+      useHomeStore.setState({ isLoading: false });
     }
-  }, [user?.id]);
+  }, [user?.id, authLoading]);
 
   const refresh = useCallback(async () => {
     const promises: Promise<void>[] = [refreshWeather()];
@@ -59,7 +64,7 @@ export function useHomeDashboard() {
     streak,
     seedBoxStatus,
     totalPlants,
-    isLoading: dashLoading,
+    isLoading: authLoading || dashLoading,
     error: dashError,
 
     // Actions

@@ -8,9 +8,11 @@ import { Button } from '@/components/ui/Button';
 
 interface EmptyGardenStateProps {
   hasGardens: boolean;
+  onAddPlant?: () => void;
+  onCreateGarden?: () => void;
 }
 
-export function EmptyGardenState({ hasGardens }: EmptyGardenStateProps) {
+export function EmptyGardenState({ hasGardens, onAddPlant, onCreateGarden }: EmptyGardenStateProps) {
   const theme = useTheme();
 
   return (
@@ -29,7 +31,7 @@ export function EmptyGardenState({ hasGardens }: EmptyGardenStateProps) {
         </Text>
         <Button
           label={hasGardens ? 'Add Your First Plant' : 'Create a Garden'}
-          onPress={() => {}}
+          onPress={hasGardens ? onAddPlant : onCreateGarden}
           style={styles.cta}
         />
       </View>

@@ -7,9 +7,10 @@ import type { GardenWithCount } from '@/stores/homeStore';
 
 interface GardenCardsProps {
   gardens: GardenWithCount[];
+  onGardenPress?: (gardenId: string) => void;
 }
 
-export function GardenCards({ gardens }: GardenCardsProps) {
+export function GardenCards({ gardens, onGardenPress }: GardenCardsProps) {
   const theme = useTheme();
 
   if (gardens.length === 0) return null;
@@ -23,7 +24,9 @@ export function GardenCards({ gardens }: GardenCardsProps) {
         horizontal
         data={gardens}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <GardenCard garden={item} />}
+        renderItem={({ item }) => (
+          <GardenCard garden={item} onPress={() => onGardenPress?.(item.id)} />
+        )}
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.list}
         ItemSeparatorComponent={() => <View style={{ width: Spacing.sm }} />}

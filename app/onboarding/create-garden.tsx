@@ -78,6 +78,9 @@ export default function CreateGardenScreen() {
           onboarding_complete: true,
         }).eq('id', user.id);
 
+        // 3b. Refresh in-memory profile so dashboard has ZIP for weather
+        await useAuthStore.getState().fetchProfile();
+
         // 4. Create first garden
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         await (supabase as any).from('gardens').insert({

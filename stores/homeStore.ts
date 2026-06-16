@@ -128,78 +128,104 @@ export const useHomeStore = create<HomeState>((set, get) => ({
     set({ isLoading: true, error: null });
 
     try {
-      // Parallel queries
-      const [gardensRes, seedBoxRes] = await Promise.all([
-        // 1. Gardens with plant counts
-        (supabase as any)
-          .from('gardens')
-          .select('id, name, emoji_icon, type, plants(count)')
-          .eq('user_id', userId),
+      // 1. Fetch gardens (simple query, no joins)
+      const { data: gardensRaw, error: gardensErr } = await (supabase as any)
+        .from('gardens')
+        .select('id, name, emoji_icon, type')
+        .eq('user_id', userId);
 
-        // 2. SeedBox status
-        (supabase as any)
-          .from('seedbox_subscriptions')
-          .select('id, status')
-          .eq('user_id', userId)
-          .limit(1),
-      ]);
+      if (gardensErr) throw gardensErr;
 
-      // Process gardens
-      const gardens: GardenWithCount[] = (gardensRes.data ?? []).map((g: any) => ({
+      const gardensList = gardensRaw ?? [];
+
+      // 2. Count plants per garden (separate simple query)
+      let plantCounts: Record<string, number> = {};
+      if (gardensList.length > 0) {
+        const gardenIds = gardensList.map((g: any) => g.id);
+        const { data: plants } = await (supabase as any)
+          .from('plants')
+          .select('garden_id')
+          .in('garden_id', gardenIds);
+
+        if (plants) {
+          for (const p of plants) {
+            plantCounts[p.garden_id] = (plantCounts[p.garden_id] ?? 0) + 1;
+          }
+        }
+      }
+
+      const gardens: GardenWithCount[] = gardensList.map((g: any) => ({
         id: g.id,
         name: g.name,
         emoji_icon: g.emoji_icon ?? '🌱',
         type: g.type,
-        plant_count: g.plants?.[0]?.count ?? 0,
+        plant_count: plantCounts[g.id] ?? 0,
       }));
 
       const totalPlants = gardens.reduce((sum, g) => sum + g.plant_count, 0);
 
-      // Fetch tasks if user has gardens
+      // 3. Fetch care tasks (only if there are gardens with plants)
       let todayTasks: CareTask[] = [];
-      if (gardens.length > 0) {
+      if (totalPlants > 0) {
         const gardenIds = gardens.map((g) => g.id);
         const gardenEmojiMap = Object.fromEntries(gardens.map((g) => [g.id, g.emoji_icon]));
 
-        const tomorrow = tomorrowStr();
-        const { data: schedules } = await (supabase as any)
-          .from('care_schedules')
-          .select('id, plant_id, care_type, frequency_days, next_due_date, plants!inner(id, nickname, custom_name, garden_id, plant_species(common_name))')
-          .lte('next_due_date', tomorrow)
-          .in('plants.garden_id', gardenIds);
+        // Get all plants for user's gardens
+        const { data: userPlants } = await (supabase as any)
+          .from('plants')
+          .select('id, nickname, custom_name, garden_id, species_id')
+          .in('garden_id', gardenIds);
 
-        if (schedules) {
-          todayTasks = schedules.map((s: any) => {
-            const plant = s.plants;
-            const plantName = plant?.nickname || plant?.custom_name || plant?.plant_species?.common_name || 'Unknown plant';
-            const { urgency, overdueDays } = classifyUrgency(s.next_due_date);
+        if (userPlants && userPlants.length > 0) {
+          const plantIds = userPlants.map((p: any) => p.id);
+          const plantMap = Object.fromEntries(userPlants.map((p: any) => [p.id, p]));
 
-            return {
-              scheduleId: s.id,
-              plantId: s.plant_id,
-              plantName,
-              gardenEmoji: gardenEmojiMap[plant?.garden_id] ?? '🌱',
-              careType: s.care_type as CareType,
-              frequencyDays: s.frequency_days,
-              nextDueDate: s.next_due_date,
-              urgency,
-              overdueDays,
-            };
-          });
+          const tomorrow = tomorrowStr();
+          const { data: schedules } = await (supabase as any)
+            .from('care_schedules')
+            .select('id, plant_id, care_type, frequency_days, next_due_date')
+            .in('plant_id', plantIds)
+            .lte('next_due_date', tomorrow);
 
-          // Sort: overdue first (oldest), then today, then upcoming
-          todayTasks.sort((a, b) => {
-            const urgencyOrder = { overdue: 0, today: 1, upcoming: 2 };
-            const orderDiff = urgencyOrder[a.urgency] - urgencyOrder[b.urgency];
-            if (orderDiff !== 0) return orderDiff;
-            return new Date(a.nextDueDate).getTime() - new Date(b.nextDueDate).getTime();
-          });
+          if (schedules) {
+            todayTasks = schedules.map((s: any) => {
+              const plant = plantMap[s.plant_id];
+              const plantName = plant?.nickname || plant?.custom_name || 'Plant';
+              const { urgency, overdueDays } = classifyUrgency(s.next_due_date);
+
+              return {
+                scheduleId: s.id,
+                plantId: s.plant_id,
+                plantName,
+                gardenEmoji: gardenEmojiMap[plant?.garden_id] ?? '🌱',
+                careType: s.care_type as CareType,
+                frequencyDays: s.frequency_days,
+                nextDueDate: s.next_due_date,
+                urgency,
+                overdueDays,
+              };
+            });
+
+            todayTasks.sort((a, b) => {
+              const urgencyOrder = { overdue: 0, today: 1, upcoming: 2 };
+              const orderDiff = urgencyOrder[a.urgency] - urgencyOrder[b.urgency];
+              if (orderDiff !== 0) return orderDiff;
+              return new Date(a.nextDueDate).getTime() - new Date(b.nextDueDate).getTime();
+            });
+          }
         }
       }
 
+      // 4. SeedBox status
+      const { data: seedBoxData } = await (supabase as any)
+        .from('seedbox_subscriptions')
+        .select('id, status')
+        .eq('user_id', userId)
+        .limit(1);
+
       // Process SeedBox
       let seedBoxStatus: SeedBoxStatus = { type: 'none' };
-      const sub = seedBoxRes.data?.[0];
+      const sub = seedBoxData?.[0];
       if (sub) {
         if (sub.status === 'active') {
           // Fetch latest order

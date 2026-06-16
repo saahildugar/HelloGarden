@@ -8,9 +8,10 @@ import type { SeedBoxStatus } from '@/stores/homeStore';
 
 interface SeedBoxBannerProps {
   status: SeedBoxStatus;
+  onPress?: () => void;
 }
 
-export function SeedBoxBanner({ status }: SeedBoxBannerProps) {
+export function SeedBoxBanner({ status, onPress }: SeedBoxBannerProps) {
   const theme = useTheme();
 
   // Active subscriber -- show order status
@@ -26,27 +27,28 @@ export function SeedBoxBanner({ status }: SeedBoxBannerProps) {
       : 'SeedBox subscription active';
 
     return (
-      <View style={[styles.banner, { backgroundColor: Colors.successLight, marginHorizontal: SCREEN_PADDING }]}>
+      <Pressable onPress={onPress} style={[styles.banner, { backgroundColor: Colors.successLight, marginHorizontal: SCREEN_PADDING }]}>
         <Ionicons name="cube" size={18} color={Colors.sageDark} />
         <Text style={[Typography.label, { color: Colors.sageDark, flex: 1 }]}>{statusText}</Text>
         <Ionicons name="chevron-forward" size={16} color={Colors.sageDark} />
-      </View>
+      </Pressable>
     );
   }
 
   // Paused
   if (status.type === 'paused') {
     return (
-      <View style={[styles.banner, { backgroundColor: Colors.warningLight, marginHorizontal: SCREEN_PADDING }]}>
+      <Pressable onPress={onPress} style={[styles.banner, { backgroundColor: Colors.warningLight, marginHorizontal: SCREEN_PADDING }]}>
         <Ionicons name="pause-circle" size={18} color={Colors.warningAmber} />
         <Text style={[Typography.label, { color: Colors.warningAmber, flex: 1 }]}>SeedBox paused</Text>
-      </View>
+        <Ionicons name="chevron-forward" size={16} color={Colors.warningAmber} />
+      </Pressable>
     );
   }
 
   // Non-subscriber -- subtle pitch
   return (
-    <Pressable style={[styles.banner, { backgroundColor: theme.card, marginHorizontal: SCREEN_PADDING }]}>
+    <Pressable onPress={onPress} style={[styles.banner, { backgroundColor: theme.card, marginHorizontal: SCREEN_PADDING }]}>
       <Text style={styles.seedEmoji}>🌱</Text>
       <View style={{ flex: 1 }}>
         <Text style={[Typography.label, { color: theme.text }]}>
