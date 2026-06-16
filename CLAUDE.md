@@ -66,6 +66,53 @@ Note: When you can make changes without the user having to do it, please just ma
 - **Stripe mode**: Sandbox/test during development (pk_test_... / sk_test_...)
 - **Domain**: hellogarden.com — NOT yet purchased
 
+## How to Run the App (Android Emulator)
+
+**This is the exact sequence that works. Follow it step by step.**
+
+### 1. Prerequisites
+- Android Studio emulator must be running (Medium Phone API 36)
+- Dev build of `com.hellogarden.app` must be installed on the emulator (check: `adb shell pm list packages | findstr hellogarden`)
+- If no dev build exists, run `npx expo run:android` once to create it (takes several minutes)
+
+### 2. Add adb to PATH (every bash session)
+```bash
+export PATH="$PATH:/c/Users/Test/AppData/Local/Android/Sdk/platform-tools"
+```
+
+### 3. Kill old node processes & set up port forwarding
+```bash
+cmd /c "taskkill /F /IM node.exe /T"
+adb reverse tcp:8090 tcp:8090
+```
+
+### 4. Start Metro (use CI=1 for non-interactive mode)
+```bash
+cd "C:\Users\Test\Desktop\Saahil Dugar HS\School\Projects\HelloGarden"
+CI=1 npx expo start --dev-client -c --port 8090
+```
+- Claude can run this as a background task with `run_in_background: true`
+- `CI=1` is required — without it, Metro prompts for interactive input and exits
+- `--non-interactive` flag is DEPRECATED, use `CI=1` instead
+
+### 5. Launch app on emulator via deep link
+```bash
+adb shell am force-stop com.hellogarden.app
+adb shell am start -a android.intent.action.VIEW -d "exp+hellogarden://expo-development-client/?url=http%3A%2F%2F10.0.2.2%3A8090" com.hellogarden.app
+```
+
+### 6. Reset to first-run state (clear onboarding + auth)
+```bash
+adb shell pm clear com.hellogarden.app
+```
+Then relaunch with the deep link from step 5.
+
+### Common Issues
+- **Port claimed**: If port 8090 is stuck in TIME_WAIT, pick a different port (8091, 8092...) and update `adb reverse` to match
+- **`Cannot read properties of undefined (reading 'transformFile')`**: Run `npm install babel-preset-expo --legacy-peer-deps`
+- **App opens but shows Expo dev launcher instead of the app**: The deep link URL port must match the Metro port
+- Always use `--legacy-peer-deps` with `npm install`
+
 ---
 
 ## Business Model (FINALIZED)
@@ -252,6 +299,7 @@ Canva MCP was attempted but is an AI design generator, not a precision UI tool. 
 - **hellogarden.com domain**: Purchase when nearing launch.
 - **Logo**: User will generate — not blocking any code.
 - **AI Chatbot (Gemini)**: P2 priority — GEMINI_API_KEY already in env.local. Implement in Phase 6.
+- **"Connect your account" flow**: Add to Settings/Profile screen — lets anonymous users link an email/password to their existing account so data persists across devices. Use Supabase `updateUser()` to upgrade anonymous → email. Build when Settings screen is built.
 - **PowerSync sync rules**: Configure in Phase 3 (offline layer step). Rules define which tables sync to which users.
 - **Google Maps**: Dropped permanently. phzmapi.org handles zone lookup for free. OpenWeather takes ZIP directly. No geocoding needed anywhere.
 
@@ -263,3 +311,5 @@ Canva MCP was attempted but is an AI design generator, not a precision UI tool. 
 - **Session 3 (2026-06-14)**: Confirmed Canva MCP connected to 1051549@lwsd.org. Completed Phase 1 UI/UX research (Planta, PictureThis, Gardenize, Plant Parent). Completed Phase 2 full UI architecture — 27 screens defined, all 13 product decisions made, 4-tab navigation locked. Attempted Phase 3 mockups via Canva MCP — abandoned. Canva AI generation is not a precision UI tool and produces inaccurate layouts. Decision: architecture doc is the spec, coded screens are the visual reference. Completed Phase 1 coding: Expo SDK 56 project initialized, all packages installed (Supabase, WatermelonDB, PowerSync, Zustand, Stripe, Sentry, Gemini, expo-router, all expo plugins), full folder structure, design system (Colors/Typography/Spacing/useTheme), Expo Router shell with 4-tab layout + placeholder screens, lib/env.ts + lib/supabase.ts + types/database.ts, Supabase schema (14 tables, 9 ENUMs, all RLS, auto-profile trigger) applied. TypeScript: zero errors. Committed at f0f94f9. Phase 2 (Auth + Onboarding) is next.
 - **Session 4 (2026-06-14)**: Phase 2 COMPLETE and committed (c6c3e87). All auth + onboarding screens built and running on Android emulator. Key build issues resolved: (1) `babel-preset-expo` was missing from top-level node_modules (nested under expo/node_modules) after npm install cycles — fixed by installing it explicitly. THIS IS THE ROOT CAUSE OF ALL `Cannot read properties of undefined (reading 'transformFile')` METRO ERRORS. (2) `react-native-worklets/plugin` is the correct babel plugin for Reanimated 4.x. (3) `adb` is at `/c/Users/Test/AppData/Local/Android/Sdk/platform-tools/adb` — must add to PATH manually in bash: `export PATH="$PATH:/c/Users/Test/AppData/Local/Android/Sdk/platform-tools"`. (4) Port 8081 gets phantom-claimed by background Metro processes — use port 8082 as fallback and set `adb reverse tcp:8082 tcp:8082`. (5) Use `10.0.2.2` (NOT `10.0.0.139`) in deep links for emulator → host connection. Standard deep link: `adb shell am start -a android.intent.action.VIEW -d "exp+hellogarden://expo-development-client/?url=http%3A%2F%2F10.0.2.2%3A8082" com.hellogarden.app`. (6) `npx expo run:android` in background mode doesn't properly start Metro interactively — run `npx expo start --dev-client -c --port 8082` separately, THEN send deep link. Phase 3 (Home screen + plant tracking) is next.
 - **Session 4 audit + completion (same day)**: Phase 2 audit found one gap — Apple OAuth was missing. Added `expo-apple-authentication`, implemented `handleAppleSignIn` in both auth screens using `AppleAuthentication.AppleAuthenticationButton` (App Store requirement — cannot use custom button). Button renders only on iOS (`isAvailableAsync()` returns false on Android emulator — correct). Added plugin to `app.config.ts`. Also resolved onboarding screen count: 3 screens total (not 4) — SeedBox pitch removed from onboarding entirely. SeedBox pitch now lives as a first-visit experience inside the SeedBox tab (implemented in Phase 5). PROD_DOC.md updated to reflect all of this. Phase 2 is now fully complete.
+- **Session 5 (2026-06-15)**: Phase 2 re-audit with user testing on emulator. Found and fixed critical NavigationGuard bugs: (1) Auth screens were unreachable during onboarding — guard redirected back to Welcome whenever user navigated to `/(auth)/*` because it only allowed `inOnboarding`, not `inAuth`. Fixed by adding `!inAuth` check. (2) After email sign-in, user got stuck on sign-in screen — guard had no rule for `session && !isOnboardingComplete && inAuth`. Fixed by removing `!inAuth` from the session+onboarding redirect. (3) create-garden.tsx blindly called `signInAnonymously()` even if user already had an email session — fixed to check `session` first. (4) Password reset message was misleading ("We sent a link") when Supabase returns success even for non-existent emails — changed to "If an account exists..." wording. Also confirmed Metro CAN run as Claude background task using `CI=1` (old note was wrong). Dev workflow documented in CLAUDE.md. Created test Supabase user: saahilsciencebowl@gmail.com / 123456. Decision: "Connect your account" flow (anonymous → email upgrade) deferred to Settings screen. Phase 2 bugs fixed but NOT yet committed — needs user verification first. Phase 3 is next after commit.
+- **Session 6 (2026-06-15)**: (1) Committed Phase 2 bug fixes + verified all Phase 2 code against SESSION_STATE.md checklist — 100% implemented. (2) Found and fixed ANOTHER NavigationGuard bug: `session && !isOnboardingComplete` was redirecting users back to `/onboarding/setup` when they tried to navigate from setup to create-garden screen. Fixed by adding `!inOnboarding` so guard doesn't interfere while user progresses through onboarding. (3) Started Phase 3 Step 11: Home Dashboard. Built full dashboard with: weather widget (OpenWeather API, rain/frost-aware messages), daily care streak (AsyncStorage-backed), garden overview cards (horizontal scroll), today's care tasks (urgency-colored: overdue=red, today=amber, upcoming=green, with checkmark completion), SeedBox status banner (subscriber/non-subscriber), empty/loading/error states for every section. New files: `lib/weather.ts`, `stores/homeStore.ts`, `hooks/useWeather.ts`, `hooks/useHomeDashboard.ts`, 9 components in `components/home/`. Replaced placeholder `app/(tabs)/index.tsx` with full dashboard. Successfully bundled and running on Android emulator.

@@ -39,7 +39,7 @@ export default function CreateGardenScreen() {
   const router = useRouter();
   const theme = useTheme();
   const { zip, zone, experienceLevel, gardenTypes, reset } = useOnboardingStore();
-  const { signInAnonymously, setOnboardingComplete } = useAuthStore();
+  const { session, signInAnonymously, setOnboardingComplete } = useAuthStore();
 
   const [gardenName, setGardenName] = useState('');
   const [selectedEmoji, setSelectedEmoji] = useState('🌱');
@@ -59,10 +59,12 @@ export default function CreateGardenScreen() {
     setIsCreating(true);
 
     try {
-      // 1. Create anonymous Supabase session
-      await signInAnonymously();
+      // 1. Create session if user doesn't already have one (e.g. from email sign-in)
+      if (!session) {
+        await signInAnonymously();
+      }
 
-      // 2. Get the newly created user
+      // 2. Get the current user
       const { data: { user } } = await supabase.auth.getUser();
 
       if (user) {

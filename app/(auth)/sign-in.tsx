@@ -65,8 +65,8 @@ export default function SignInScreen() {
       Alert.alert('Error', error.message);
     } else {
       Alert.alert(
-        'Check your inbox',
-        `We sent a password reset link to ${email.trim().toLowerCase()}. It may take a moment to arrive.`,
+        'Password reset',
+        `If an account exists for ${email.trim().toLowerCase()}, we'll send a reset link. Check your inbox and spam folder.`,
         [{ text: 'OK' }]
       );
     }

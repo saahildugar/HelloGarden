@@ -36,9 +36,17 @@ function NavigationGuard() {
     const inOnboarding = segments[0] === 'onboarding';
     const inAuth = segments[0] === '(auth)';
 
-    if (!isOnboardingComplete && !inOnboarding) {
-      // First-time user — always go to onboarding first
+    if (!isOnboardingComplete && !inOnboarding && !inAuth) {
+      // First-time user not in onboarding or auth → send to onboarding
+      // (allow auth screens so "Sign in" link on Welcome works)
       router.replace('/onboarding/welcome');
+      return;
+    }
+
+    if (session && !isOnboardingComplete && !inOnboarding) {
+      // User signed in (via email or OAuth) but hasn't finished onboarding → send to setup
+      // (don't redirect if already in onboarding — let them progress through screens)
+      router.replace('/onboarding/setup');
       return;
     }
 
